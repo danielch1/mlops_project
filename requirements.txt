@@ -12,3 +12,4 @@ torch
 torchvision
 dvc
 wandb
+dvc-gdrive
