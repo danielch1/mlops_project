@@ -4,35 +4,7 @@ import torch
 import os
 from PIL import Image
 from torchvision import transforms
-
-
-class Lego_Dataset(torch.utils.data.Dataset):
-    def __init__(self, file_paths, path, labels, transform=None):
-        """
-        Args:
-            file_paths (list): List of file paths for the images.
-            labels (list): List of corresponding labels.
-            transform (callable, optional): Optional transform to be applied on a sample.
-        """
-        self.file_paths = file_paths
-        self.labels = labels
-        self.transform = transform
-        self.path = path
-
-    def __len__(self):
-        return len(self.file_paths)
-
-    def __getitem__(self, idx):
-        img_path = self.file_paths[idx]
-        image = Image.open(os.path.join(self.path,img_path)).convert("RGB")
-
-        if self.transform:
-            image = self.transform(image)
-
-        label = self.labels[idx]
-
-        return image, label
-
+from LegoDataset import Lego_Dataset
 
 if __name__ == '__main__':
 
@@ -46,4 +18,5 @@ if __name__ == '__main__':
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
     trainset = Lego_Dataset(file_paths=files, path = path, labels=labels,transform=transform)
 
-    torch.save(trainset, 'data/processed/LEGO_torch_train_dataset.pt')
+    trainset.save('data/processed/LEGO_torch_train_dataset.pt')
+    trainset.load('data/processed/LEGO_torch_train_dataset.pt')
