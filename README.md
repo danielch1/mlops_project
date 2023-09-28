@@ -1,7 +1,7 @@
 mlops_project
 ==============================
 
-MLOps project as a part of Master studies at University of Munich, summer semester 2023
+Project repository for a MLOps course at University of Munich, ss2023
 
 Project Organization
 ------------
