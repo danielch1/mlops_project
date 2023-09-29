@@ -1,20 +1,40 @@
 # -*- coding: utf-8 -*-
-import logging
 import pandas as pd
-import numpy as np
 import torch
 import os
-import random
 from pathlib import Path
 from torch.utils.data import Dataset, DataLoader
-from PIL import Image
+from src.data import Lego_Dataset
+import logging
 from torchvision import transforms
 
 
-def main(input_filepath, output_filepath):
+def main():
     """ Runs data processing scripts to turn raw data from (../raw) into
         cleaned data ready to be analyzed (saved in ../processed).
     """
+    #ToDo Paths
+
+    parent = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+    data_path = os.path.join(parent,'data/external/lego_dataset/')
+
+
+    index = pd.read_csv(os.path.join(data_path,Path('index.csv')))
+    labels = index["class_id"]-1
+    files = index["path"]
+
+    transform = transforms.Compose([transforms.ToTensor(),
+                                    transforms.Normalize((0.5,), (0.5,))])
+
+
+
+    trainset = Lego_Dataset(file_paths=files, path = data_path, labels=labels,transform=transform)
+
+
+    torch.save(trainset, os.path.join(parent,'/data/processed/trainset.pth'))
+    #train_loader = DataLoader(trainset, batch_size=32, shuffle=True)
+
     logger = logging.getLogger(__name__)
     logger.info('making final data set from raw data')
 
