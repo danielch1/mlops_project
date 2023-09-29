@@ -37,7 +37,7 @@ def train_model(cfg):
     num_classes = 38
     trainset,val_set = get_data()
     train_loader = DataLoader(trainset, batch_size=cfg.hparams.batch_size, shuffle=cfg.hparams.shuffle)
-    val_loader = DataLoader(trainset, batch_size= cfg.hparams.batch_size, shuffle = cfg.hparams.shuffle)
+    val_loader = DataLoader(trainset, batch_size= cfg.hparams.batch_size, shuffle = False)
 
     print("Defining model...")
     # Model definition
