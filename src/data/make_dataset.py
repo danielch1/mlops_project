@@ -4,9 +4,37 @@ import torch
 import os
 from pathlib import Path
 from torch.utils.data import Dataset, DataLoader
-from src.data import Lego_Dataset
 import logging
 from torchvision import transforms
+
+class Lego_Dataset(torch.utils.data.Dataset):
+    def __init__(self, file_paths, path, labels, transform=None):
+        """
+        Args:
+            file_paths (list): List of file paths for the images.
+            labels (list): List of corresponding labels.
+            transform (callable, optional): Optional transform to be applied on a sample.
+        """
+        self.file_paths = file_paths
+        self.labels = labels
+        self.transform = transform
+        self.path = path
+
+    def __len__(self):
+        return len(self.file_paths)
+
+    def __getitem__(self, idx):
+        img_path = self.file_paths[idx]
+        image = Image.open(os.path.join(self.path,img_path)).convert("RGB")
+
+        if self.transform:
+            image = self.transform(image)
+
+        label = self.labels[idx]
+
+        return image, label
+
+
 
 
 def main():
@@ -31,8 +59,7 @@ def main():
 
     trainset = Lego_Dataset(file_paths=files, path = data_path, labels=labels,transform=transform)
 
-
-    torch.save(trainset, os.path.join(parent,'/data/processed/trainset.pth'))
+    torch.save(trainset,os.path.join(parent,Path('data/processed/trainset.pth')))
     #train_loader = DataLoader(trainset, batch_size=32, shuffle=True)
 
     logger = logging.getLogger(__name__)
