@@ -9,6 +9,19 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 import wandb
 
+wandb.init(
+    # set the wandb project where this run will be logged
+    project="my-awesome-project",
+    
+    # track hyperparameters and run metadata
+    config={
+    "learning_rate": 0.003,
+    "architecture": "mobilenetv3",
+    "dataset": "Lego-Minifigures",
+    "epochs": 10,
+    }
+)
+
 # Import LegoDataset class (automated relative import)
 current_script_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.abspath(os.path.join(current_script_directory, '..'))
@@ -105,17 +118,18 @@ def train_model(num_epochs = 5, lr = 0.003, criterion = nn.CrossEntropyLoss()):
                 ep, epoch_loss, epoch_accuracy
             )
         )
-
+            
         model.eval()
         total_val_loss = 0
         num_val_correct = 0
-
+        
         with torch.no_grad():
             for batch_idx, (val_inputs, val_labels) in enumerate(val_loader):
                 val_outputs = model(val_inputs)
                 val_loss = criterion(val_outputs, val_labels)
                 total_val_loss += float(val_loss)
                 num_val_correct += int(torch.sum(torch.argmax(val_outputs, dim=1) == val_labels))
+
 
         val_epoch_loss = total_val_loss / len(val_set)
         val_epoch_accuracy = num_val_correct / len(val_set)
@@ -124,6 +138,8 @@ def train_model(num_epochs = 5, lr = 0.003, criterion = nn.CrossEntropyLoss()):
                 ep, val_epoch_loss, val_epoch_accuracy
                 )
         )
+
+        wandb.log({'train_acc' : epoch_accuracy,'val_acc' : val_epoch_accuracy,'train_loss' : batch_loss,'val_loss' : val_loss})
 
     # Save the trained model
     torch.save(model.state_dict(), os.path.join(root_directory, 'models', 'mobilenetv3_fine_tuned.pth'))
