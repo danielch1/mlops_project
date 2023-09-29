@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.optim as optim
 import pandas as pd
 import timm
+import hydra
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 import wandb
@@ -60,22 +61,24 @@ def get_data():
 
     return Lego_Dataset(file_paths=train_files, path = data_path, labels=train_labels,transform=train_transforms),Lego_Dataset(file_paths=val_files, path = data_path, labels=val_labels,transform=val_transforms)
 
-def train_model(num_epochs = 5, lr = 0.003, criterion = nn.CrossEntropyLoss()):
+@hydra.main(config_name="model_config.yaml")
+def train_model(cfg):
     # Data Load
     print("Loading data...")
     num_classes = 38
     trainset,val_set = get_data()
-    train_loader = DataLoader(trainset, batch_size=32, shuffle=True)
-    val_loader = DataLoader(val_set, batch_size= 32, shuffle = False)
+    train_loader = DataLoader(trainset, batch_size=cfg.hparams.batch_size, shuffle=cfg.hparams.shuffle)
+    val_loader = DataLoader(trainset, batch_size= cfg.hparams.batch_size, shuffle = cfg.hparams.shuffle)
 
     print("Defining model...")
     # Model definition
-    model = timm.create_model('mobilenetv3_large_100', pretrained=True, num_classes=num_classes)
-    optimizer = optim.Adam(model.parameters(), lr=lr)
+    model = timm.create_model('mobilenetv3_large_100', pretrained=cfg.hparams.take_pretrained_model, num_classes=num_classes)
+    optimizer = optim.Adam(model.parameters(), lr=cfg.hparams.learning_rate)
+    criterion = nn.CrossEntropyLoss()
 
     print("Training start...")
     # Training loop
-    for ep in range(num_epochs):
+    for ep in range(cfg.hparams.num_epochs):
         total_loss = 0
         num_correct = 0
 
