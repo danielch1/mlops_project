@@ -11,3 +11,5 @@ timm
 torch
 torchvision
 wandb
+pandas
+Pillow
