@@ -11,28 +11,23 @@ from torch.utils.data import DataLoader
 # Import LegoDataset class (automated relative import)
 current_script_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.abspath(os.path.join(current_script_directory, '..'))
+root_directory = os.path.abspath(os.path.join(parent_directory, '..'))
 sys.path.append(parent_directory)
 
 from data.make_dataset import Lego_Dataset
 
 
 def get_data():
-    # Load data
-    folder_path = 'data/processed/'  # Replace with the actual folder path
-    file_name = 'LEGO_torch_train_dataset.pickle'  # Replace with the actual file name
-    full_path = os.path.join(folder_path, file_name)
+    data_path = os.path.join(root_directory,"data", "external", "lego_dataset")
 
-    wd = os.getcwd()
-    path = os.path.join(wd,"C:/Users/dchro/Documents/MLOps/mlops_project/data/external/lego_dataset")
-
-    index = pd.read_csv('C:/Users/dchro/Documents/MLOps/mlops_project/data/external/lego_dataset/index.csv')
+    index = pd.read_csv(os.path.join(data_path, 'index.csv'))
     labels = index["class_id"]-1
     files = index["path"]
 
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
-    return Lego_Dataset(file_paths=files, path = path, labels=labels,transform=transform)
+    return Lego_Dataset(file_paths=files, path = data_path, labels=labels,transform=transform)
 
-def train_model(num_epochs = 3, lr = 0.003, criterion = nn.CrossEntropyLoss()):
+def train_model(num_epochs = 2, lr = 0.003, criterion = nn.CrossEntropyLoss()):
     # Data Load
     print("Loading data...")
     num_classes = 38
@@ -76,21 +71,10 @@ def train_model(num_epochs = 3, lr = 0.003, criterion = nn.CrossEntropyLoss()):
             )
         )
 
-
-        
-        # Validation loop (optional)
-        #model.eval()
-        #with torch.no_grad():
-        #    for inputs, labels in val_loader:
-        #        outputs = model(inputs)
-                # Calculate validation loss and metrics
-
     # Save the trained model
-    torch.save(model.state_dict(), 'models/mobilenetv3_fine_tuned.pth')
+    torch.save(model.state_dict(), os.path.join(root_directory, 'models', 'mobilenetv3_fine_tuned.pth'))
     print("Model saved!")
 
 
 # Run training, save model and print metrics
 train_model()
-
-
