@@ -1,0 +1,45 @@
+{
+    "os": "Windows-10-10.0.19045-SP0",
+    "python": "3.9.18",
+    "heartbeatAt": "2023-09-29T14:14:25.127924",
+    "startedAt": "2023-09-29T14:14:23.927588",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "c:\\Users\\Lennart\\Documents\\GitHub\\mlops_project\\src\\models\\train_model.py",
+    "codePathLocal": "src\\models\\train_model.py",
+    "codePath": "src\\models\\train_model.py",
+    "git": {
+        "remote": "https://github.com/danielch1/mlops_project.git",
+        "commit": "273e0ef95342d42bec9a8142bc1ddb0dd15bb6d0"
+    },
+    "email": "131344012+LennMarx@users.noreply.github.com",
+    "root": "C:/Users/Lennart/Documents/GitHub/mlops_project",
+    "host": "DESKTOP-VARO2QK",
+    "username": "Lennart",
+    "executable": "C:\\Users\\Lennart\\anaconda3\\envs\\mlops\\python.exe",
+    "cpu_count": 6,
+    "cpu_count_logical": 12,
+    "cpu_freq": {
+        "current": 3501.0,
+        "min": 0.0,
+        "max": 3501.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3501.0,
+            "min": 0.0,
+            "max": 3501.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 930.9431991577148,
+            "used": 602.8997764587402
+        }
+    },
+    "memory": {
+        "total": 15.925357818603516
+    }
+}
