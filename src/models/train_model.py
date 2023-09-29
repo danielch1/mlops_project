@@ -89,6 +89,11 @@ def train_model(cfg):
     optimizer = optim.Adam(model.parameters(), lr=cfg.hparams.learning_rate)
     criterion = nn.CrossEntropyLoss()
 
+
+    best_val_loss = float('inf')
+    patience = 2  # Number of epochs to wait for improvement
+    epochs_without_improvement = 0
+
     print("Training start...")
     # Training loop
     for ep in range(cfg.hparams.num_epochs):
@@ -113,8 +118,8 @@ def train_model(cfg):
                 )
             )
 
-        epoch_loss = total_loss / len(trainset)
-        epoch_accuracy = num_correct / len(trainset)
+        epoch_loss = total_loss / ((batch_idx + 1) * cfg.hparams.batch_size)
+        epoch_accuracy = num_correct / ((batch_idx + 1) * cfg.hparams.batch_size)
 
         print(
             "EPOCH: {:5}    LOSS: {:.3f}    ACCURACY: {:.3f}".format(
@@ -130,12 +135,13 @@ def train_model(cfg):
             for batch_idx, (val_inputs, val_labels) in enumerate(val_loader):
                 val_outputs = model(val_inputs)
                 val_loss = criterion(val_outputs, val_labels)
+                 
                 total_val_loss += float(val_loss)
                 num_val_correct += int(torch.sum(torch.argmax(val_outputs, dim=1) == val_labels))
 
 
-        val_epoch_loss = total_val_loss / len(val_set)
-        val_epoch_accuracy = num_val_correct / len(val_set)
+        val_epoch_loss = total_val_loss / ((batch_idx + 1) * cfg.hparams.batch_size)
+        val_epoch_accuracy = num_val_correct / ((batch_idx + 1) * cfg.hparams.batch_size)
         print(
             "EPOCH: {:5}    VAL LOSS: {:.3f}    VAL ACCURACY: {:.3f}".format(
                 ep, val_epoch_loss, val_epoch_accuracy
@@ -144,9 +150,23 @@ def train_model(cfg):
 
         wandb.log({'train_acc' : epoch_accuracy,'val_acc' : val_epoch_accuracy,'train_loss' : batch_loss,'val_loss' : val_loss})
 
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            epochs_without_improvement = 0
+            
+            #save the best model checkpoint here
+            torch.save(model.state_dict(), os.path.join(root_directory, 'models', 'mobilenetv3_fine_tuned.pth'))
+        else:
+            epochs_without_improvement += 1
+
+        # Check if we should stop training
+        if epochs_without_improvement >= patience:
+            print(f"Early stopping after {ep + 1} epochs")
+            break
+
     # Save the trained model
-    torch.save(model.state_dict(), os.path.join(root_directory, 'models', 'mobilenetv3_fine_tuned.pth'))
-    print("Model saved!")
+    
+    print("Best Model saved!")
 
 
 # Run training, save model and print metrics
