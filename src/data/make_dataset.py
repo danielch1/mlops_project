@@ -7,6 +7,9 @@ from torch.utils.data import Dataset, DataLoader
 import logging
 from torchvision import transforms
 
+import torch
+from PIL import Image
+
 class Lego_Dataset(torch.utils.data.Dataset):
     def __init__(self, file_paths, path, labels, transform=None):
         """
@@ -22,6 +25,7 @@ class Lego_Dataset(torch.utils.data.Dataset):
 
     def __len__(self):
         return len(self.file_paths)
+
 
     def __getitem__(self, idx):
         img_path = self.file_paths[idx]
@@ -65,16 +69,13 @@ def main():
     logger = logging.getLogger(__name__)
     logger.info('making final data set from raw data')
 
+    def __getitem__(self, idx):
+        img_path = self.file_paths[idx]
+        image = Image.open(os.path.join(self.path,img_path)).convert("RGB")
 
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
+        if self.transform:
+            image = self.transform(image)
 
-    # not used in this stub but often useful for finding various files
-    project_dir = Path(__file__).resolve().parents[2]
+        label = self.labels[idx]
 
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
-    #load_dotenv(find_dotenv())
-
-    main()
+        return image, label
