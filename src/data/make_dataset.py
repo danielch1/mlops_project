@@ -68,14 +68,3 @@ def main():
 
     logger = logging.getLogger(__name__)
     logger.info('making final data set from raw data')
-
-    def __getitem__(self, idx):
-        img_path = self.file_paths[idx]
-        image = Image.open(os.path.join(self.path,img_path)).convert("RGB")
-
-        if self.transform:
-            image = self.transform(image)
-
-        label = self.labels[idx]
-
-        return image, label
