@@ -58,7 +58,7 @@ def train_model(num_epochs = 2, lr = 0.003, criterion = nn.CrossEntropyLoss()):
 
             
             print(
-                "EPOCH: {:5}/tBATCH: {:5}/{:5}/tLOSS: {:.3f}".format(
+                "EPOCH: {:5}    BATCH: {:5}/{:5}    LOSS: {:.3f}".format(
                     ep, batch_idx, len(train_loader), batch_loss
                 )
             )
@@ -66,7 +66,7 @@ def train_model(num_epochs = 2, lr = 0.003, criterion = nn.CrossEntropyLoss()):
         epoch_loss = total_loss / len(trainset)
         epoch_accuracy = num_correct / len(trainset)
         print(
-            "EPOCH: {:5} /t LOSS: {:.3f} /t ACCURACY: {:.3f}".format(
+            "EPOCH: {:5}    LOSS: {:.3f}    ACCURACY: {:.3f}".format(
                 ep, epoch_loss, epoch_accuracy
             )
         )
