@@ -7,6 +7,7 @@ import pandas as pd
 import timm
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
+import wandb
 
 # Import LegoDataset class (automated relative import)
 current_script_directory = os.path.dirname(os.path.abspath(__file__))
@@ -21,18 +22,51 @@ def get_data():
     data_path = os.path.join(root_directory,"data", "external", "lego_dataset")
 
     index = pd.read_csv(os.path.join(data_path, 'index.csv'))
-    labels = index["class_id"]-1
-    files = index["path"]
 
-    transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
-    return Lego_Dataset(file_paths=files, path = data_path, labels=labels,transform=transform)
 
-def train_model(num_epochs = 2, lr = 0.003, criterion = nn.CrossEntropyLoss()):
+    #Train Validation Split
+    train_index = index.sample(int(0.75*len(index.index)))
+
+    remaining_indices = list(set(index.index) - set(train_index.index))
+    # Create a new DataFrame with the remaining indices
+    train_index.reset_index(inplace= True, drop=True)
+    val_index = index.loc[remaining_indices].reset_index(drop=True)
+
+    train_labels = train_index["class_id"]-1
+    train_files = train_index["path"]
+
+    val_labels = val_index["class_id"]-1
+    val_files = val_index["path"]
+
+
+    train_transforms = transforms.Compose([
+    transforms.RandomResizedCrop(224),  # Random crop and resize to 224x224
+    transforms.RandomHorizontalFlip(),  # Randomly flip the image horizontally
+    transforms.RandomRotation(degrees=30),  # Randomly rotate the image up to 30 degrees
+    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),  # Randomly translate the image
+    transforms.RandomPerspective(distortion_scale=0.5, p=0.5),  # Apply perspective transformation
+    transforms.ToTensor(),  # Convert the image to a PyTorch tensor
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # ImageNet statistics
+])
+
+    # Define transforms for validation and test data (typically no augmentation)
+    val_transforms = transforms.Compose([
+        transforms.Resize(256),  # Resize to 256x256
+        transforms.CenterCrop(224),  # Center crop to 224x224
+        transforms.ToTensor(),  # Convert the image to a PyTorch tensor
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # ImageNet statistics
+    ])
+
+
+    return Lego_Dataset(file_paths=train_files, path = data_path, labels=train_labels,transform=train_transforms),Lego_Dataset(file_paths=val_files, path = data_path, labels=val_labels,transform=val_transforms)
+
+def train_model(num_epochs = 5, lr = 0.003, criterion = nn.CrossEntropyLoss()):
     # Data Load
     print("Loading data...")
     num_classes = 38
-    trainset = get_data()
-    train_loader = DataLoader(trainset, batch_size=32, shuffle=True) 
+    trainset,val_set = get_data()
+    train_loader = DataLoader(trainset, batch_size=32, shuffle=True)
+    val_loader = DataLoader(val_set, batch_size= 32, shuffle = False)
 
     print("Defining model...")
     # Model definition
@@ -65,10 +99,30 @@ def train_model(num_epochs = 2, lr = 0.003, criterion = nn.CrossEntropyLoss()):
 
         epoch_loss = total_loss / len(trainset)
         epoch_accuracy = num_correct / len(trainset)
+
         print(
             "EPOCH: {:5}    LOSS: {:.3f}    ACCURACY: {:.3f}".format(
                 ep, epoch_loss, epoch_accuracy
             )
+        )
+
+        model.eval()
+        total_val_loss = 0
+        num_val_correct = 0
+
+        with torch.no_grad():
+            for batch_idx, (val_inputs, val_labels) in enumerate(val_loader):
+                val_outputs = model(val_inputs)
+                val_loss = criterion(val_outputs, val_labels)
+                total_val_loss += float(val_loss)
+                num_val_correct += int(torch.sum(torch.argmax(val_outputs, dim=1) == val_labels))
+
+        val_epoch_loss = total_val_loss / len(val_set)
+        val_epoch_accuracy = num_val_correct / len(val_set)
+        print(
+            "EPOCH: {:5}    VAL LOSS: {:.3f}    VAL ACCURACY: {:.3f}".format(
+                ep, val_epoch_loss, val_epoch_accuracy
+                )
         )
 
     # Save the trained model
