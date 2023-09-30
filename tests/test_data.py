@@ -3,6 +3,7 @@ import torch
 import os
 from src.data.make_dataset import Lego_Dataset
 import pytest
+import numpy as np
 
 @pytest.mark.parametrize('data_path,expected_data_shape', [
     (os.path.join(_PATH_DATA,'processed','train_dataset.pth'), torch.Size([3, 224, 224])),
@@ -12,8 +13,9 @@ import pytest
 
 
 def test_data_shape(data_path,expected_data_shape):
+    #load dataset from file
     dataset = torch.load(data_path)
-    img,_ = dataset.__getitem__(0)
-    assert img.shape == expected_data_shape
-
-
+    #iterate through every image in dataset and compare to the expected shape
+    check_shape = np.array([dataset.__getitem__(i)[0].shape == expected_data_shape for i in range(len(dataset))]).sum()
+    #show that every image has the correct shape
+    assert check_shape == len(dataset)

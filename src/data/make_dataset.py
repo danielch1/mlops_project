@@ -9,34 +9,38 @@ from torchvision import transforms
 import sys
 import torch
 from PIL import Image
+import random
+from src.data.Lego_Dataset import Lego_Dataset
 
-class Lego_Dataset(torch.utils.data.Dataset):
-    def __init__(self, file_paths, path, labels, transform=None):
-        """
-        Args:
-            file_paths (list): List of file paths for the images.
-            labels (list): List of corresponding labels.
-            transform (callable, optional): Optional transform to be applied on a sample.
-        """
-        self.file_paths = file_paths
-        self.labels = labels
-        self.transform = transform
-        self.path = path
+# class Lego_Dataset(torch.utils.data.Dataset):
+#     def __init__(self, file_paths, path, labels, transform=None):
+#         """
+#         Args:
+#             file_paths (list): List of file paths for the images.
+#             labels (list): List of corresponding labels.
+#             transform (callable, optional): Optional transform to be applied on a sample.
+#         """
+#         self.file_paths = file_paths
+#         self.labels = labels
+#         self.transform = transform
+#         self.path = path
 
-    def __len__(self):
-        return len(self.file_paths)
+#     def __len__(self):
+#         return len(self.file_paths)
 
 
-    def __getitem__(self, idx):
-        img_path = self.file_paths[idx]
-        image = Image.open(os.path.join(self.path,img_path)).convert("RGB")
+#     def __getitem__(self, idx):
+#         img_path = self.file_paths[idx]
+#         image = Image.open(os.path.join(self.path,img_path)).convert("RGB")
 
-        if self.transform:
-            image = self.transform(image)
+#         random.seed(42)
+#         torch.manual_seed(42)
+#         if self.transform:
+#             image = self.transform(image)
 
-        label = self.labels[idx]
+#         label = self.labels[idx]
 
-        return image, label
+#         return image, label
 
 
 
@@ -56,7 +60,7 @@ def make_train_data():
 
 
     #Train Validation Split
-    train_index = index.sample(int(0.75*len(index.index)))
+    train_index = index.sample(int(0.75*len(index.index)),random_state=42)
 
     remaining_indices = list(set(index.index) - set(train_index.index))
     # Create a new DataFrame with the remaining indices
@@ -92,6 +96,7 @@ def make_train_data():
     torch.save(Lego_Dataset(file_paths=val_files, path = data_path, labels=val_labels,transform=val_transforms),os.path.join(root_directory,"data", "processed", "val_dataset.pth"))
 
 
+
     #Creates the test data set from the external files and saves the torch Dataset to processed
 def make_test_Data():
     current_script_directory = os.path.dirname(os.path.abspath(__file__))
@@ -114,9 +119,6 @@ def make_test_Data():
     ])
 
     torch.save(Lego_Dataset(file_paths=test_files, path = data_path, labels=test_labels,transform=test_transforms),os.path.join(root_directory,"data", "processed", "test_dataset.pth"))
-
-    
-
 
 # where to execute this from?
 if __name__ == "__main__":
