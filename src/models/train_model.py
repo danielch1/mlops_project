@@ -9,7 +9,7 @@ import hydra
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 import wandb
-from src.data.make_dataset import get_data
+from src.data.make_dataset import Lego_Dataset
 
 
 current_script_directory = os.path.dirname(os.path.abspath(__file__))
@@ -35,9 +35,10 @@ def train_model(cfg):
     # Data Load
     print("Loading data...")
     num_classes = 38
-    trainset,val_set = get_data()
+    trainset = torch.load(os.path.join(root_directory,"data", "processed", "train_dataset.pth"))
+    val_set = torch.load(os.path.join(root_directory,"data", "processed", "val_dataset.pth"))
     train_loader = DataLoader(trainset, batch_size=cfg.hparams.batch_size, shuffle=cfg.hparams.shuffle)
-    val_loader = DataLoader(trainset, batch_size= cfg.hparams.batch_size, shuffle = False)
+    val_loader = DataLoader(val_set, batch_size= cfg.hparams.batch_size, shuffle = False)
 
     print("Defining model...")
     # Model definition
@@ -74,8 +75,8 @@ def train_model(cfg):
                 )
             )
 
-        epoch_loss = total_loss / ((batch_idx + 1) * cfg.hparams.batch_size)
-        epoch_accuracy = num_correct / ((batch_idx + 1) * cfg.hparams.batch_size)
+        epoch_loss = total_loss / len(trainset)
+        epoch_accuracy = num_correct / len(trainset)
 
         print(
             "EPOCH: {:5}    LOSS: {:.3f}    ACCURACY: {:.3f}".format(
@@ -96,8 +97,8 @@ def train_model(cfg):
                 num_val_correct += int(torch.sum(torch.argmax(val_outputs, dim=1) == val_labels))
 
 
-        val_epoch_loss = total_val_loss / ((batch_idx + 1) * cfg.hparams.batch_size)
-        val_epoch_accuracy = num_val_correct / ((batch_idx + 1) * cfg.hparams.batch_size)
+        val_epoch_loss = total_val_loss / len(val_set)
+        val_epoch_accuracy = num_val_correct / len(val_set)
         print(
             "EPOCH: {:5}    VAL LOSS: {:.3f}    VAL ACCURACY: {:.3f}".format(
                 ep, val_epoch_loss, val_epoch_accuracy

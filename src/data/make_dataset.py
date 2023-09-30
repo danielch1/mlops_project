@@ -40,8 +40,8 @@ class Lego_Dataset(torch.utils.data.Dataset):
 
 
 
-
-def get_data():
+# creates the train and validation dataset and saves it to processed
+def make_train_data():
 
     current_script_directory = os.path.dirname(os.path.abspath(__file__))
     parent_directory = os.path.abspath(os.path.join(current_script_directory, '..'))
@@ -88,11 +88,12 @@ def get_data():
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # ImageNet statistics
     ])
 
+    torch.save(Lego_Dataset(file_paths=train_files, path = data_path, labels=train_labels,transform=train_transforms), os.path.join(root_directory,"data", "processed", "train_dataset.pth"))
+    torch.save(Lego_Dataset(file_paths=val_files, path = data_path, labels=val_labels,transform=val_transforms),os.path.join(root_directory,"data", "processed", "val_dataset.pth"))
 
-    return Lego_Dataset(file_paths=train_files, path = data_path, labels=train_labels,transform=train_transforms),Lego_Dataset(file_paths=val_files, path = data_path, labels=val_labels,transform=val_transforms)
 
-
-def get_test_Data():
+    #Creates the test data set from the external files and saves the torch Dataset to processed
+def make_test_Data():
     current_script_directory = os.path.dirname(os.path.abspath(__file__))
     parent_directory = os.path.abspath(os.path.join(current_script_directory, '..'))
     root_directory = os.path.abspath(os.path.join(parent_directory, '..'))
@@ -112,5 +113,15 @@ def get_test_Data():
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # ImageNet statistics
     ])
 
+    torch.save(Lego_Dataset(file_paths=test_files, path = data_path, labels=test_labels,transform=test_transforms),os.path.join(root_directory,"data", "processed", "test_dataset.pth"))
 
-    return Lego_Dataset(file_paths=test_files, path = data_path, labels=test_labels,transform=test_transforms)
+    
+
+
+# where to execute this from?
+if __name__ == "__main__":
+    make_train_data()
+    make_test_Data()
+    
+
+
