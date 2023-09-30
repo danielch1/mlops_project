@@ -98,9 +98,19 @@ def get_test_Data():
     root_directory = os.path.abspath(os.path.join(parent_directory, '..'))
     sys.path.append(parent_directory)
 
-
-    
     data_path = os.path.join(root_directory,"data", "external", "lego_dataset")
 
-    index = pd.read_csv(os.path.join(data_path, 'test.csv'))
-    
+    test_index = pd.read_csv(os.path.join(data_path, 'test.csv'))
+
+    test_labels = test_index["class_id"]-1
+    test_files = test_index["path"]
+
+    test_transforms = transforms.Compose([
+        transforms.Resize(256),  # Resize to 256x256
+        transforms.CenterCrop(224),  # Center crop to 224x224
+        transforms.ToTensor(),  # Convert the image to a PyTorch tensor
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # ImageNet statistics
+    ])
+
+
+    return Lego_Dataset(file_paths=test_files, path = data_path, labels=test_labels,transform=test_transforms)
