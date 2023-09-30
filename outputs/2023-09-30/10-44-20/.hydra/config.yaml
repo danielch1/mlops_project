@@ -1,0 +1,6 @@
+hparams:
+  batch_size: 32
+  take_pretrained_model: true
+  shuffle: true
+  learning_rate: 0.001
+  num_epochs: 30

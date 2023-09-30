@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
-from src.data.make_dataset import get_test_Data
+from src.data.make_dataset import Lego_Dataset
 import os
 from timm import create_model
 import hydra
@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
 
     model = load_model(model_path)
-    test_data = get_test_Data()
+    test_data = torch.load(os.path.join(root_directory,"data", "processed", "test_dataset.pth"))
     predictions = predict(model, test_data)
     #labels = np.array([get_test_Data()[i][1] for i in range(len(get_test_Data()))])
 

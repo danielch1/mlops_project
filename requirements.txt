@@ -13,3 +13,5 @@ torchvision
 wandb
 pandas
 Pillow
+pytest
+hydra
