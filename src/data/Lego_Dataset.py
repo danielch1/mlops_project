@@ -24,6 +24,9 @@ class Lego_Dataset(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.file_paths)
 
+    def set_path(self):
+        self.path = os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset")
+
     def __getitem__(self, idx):
         img_path = self.file_paths[idx]
         image = Image.open(os.path.join(self.path, img_path)).convert("RGB")
