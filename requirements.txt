@@ -14,4 +14,4 @@ wandb
 pandas
 Pillow
 pytest
-hydra
+hydra-core
