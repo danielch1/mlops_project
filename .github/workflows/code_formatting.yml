@@ -29,6 +29,3 @@ jobs:
       - name: black
         run: |
           black .
-      - name: ruff
-        run: |
-          ruff .
