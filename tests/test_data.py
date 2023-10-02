@@ -15,6 +15,7 @@ import numpy as np
 def test_data_shape(data_path,expected_data_shape):
     #load dataset from file
     dataset = torch.load(data_path)
+    dataset.set_path()
     #iterate through every image in dataset and compare to the expected shape
     check_shape = np.array([dataset.__getitem__(i)[0].shape == expected_data_shape for i in range(len(dataset))]).sum()
     #show that every image has the correct shape

@@ -36,7 +36,9 @@ def train_model(cfg):
     print("Loading data...")
     num_classes = 38
     trainset = torch.load(os.path.join(root_directory,"data", "processed", "train_dataset.pth"))
+    trainset.set_path()
     val_set = torch.load(os.path.join(root_directory,"data", "processed", "val_dataset.pth"))
+    val_set.set_path
     train_loader = DataLoader(trainset, batch_size=cfg.hparams.batch_size, shuffle=cfg.hparams.shuffle)
     val_loader = DataLoader(val_set, batch_size= cfg.hparams.batch_size, shuffle = False)
 
