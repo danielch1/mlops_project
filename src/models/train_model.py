@@ -38,7 +38,7 @@ def train_model(cfg):
     trainset = torch.load(os.path.join(root_directory,"data", "processed", "train_dataset.pth"))
     trainset.set_path()
     val_set = torch.load(os.path.join(root_directory,"data", "processed", "val_dataset.pth"))
-    val_set.set_path
+    val_set.set_path()
     train_loader = DataLoader(trainset, batch_size=cfg.hparams.batch_size, shuffle=cfg.hparams.shuffle)
     val_loader = DataLoader(val_set, batch_size= cfg.hparams.batch_size, shuffle = False)
 
@@ -94,7 +94,7 @@ def train_model(cfg):
             for batch_idx, (val_inputs, val_labels) in enumerate(val_loader):
                 val_outputs = model(val_inputs)
                 val_loss = criterion(val_outputs, val_labels)
-                 
+                
                 total_val_loss += float(val_loss)
                 num_val_correct += int(torch.sum(torch.argmax(val_outputs, dim=1) == val_labels))
 

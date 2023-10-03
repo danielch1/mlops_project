@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import Dataset
 from PIL import Image
 import sys
-from src.data import _PROJECT_ROOT
+from src import _PROJECT_ROOT
 
 
 class Lego_Dataset(torch.utils.data.Dataset):

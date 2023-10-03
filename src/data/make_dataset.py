@@ -11,15 +11,16 @@ import torch
 from PIL import Image
 import random
 from src.data.Lego_Dataset import Lego_Dataset
-from tests import _PROJECT_ROOT
+from src import _PROJECT_ROOT
 
 
 # processes the data from the external data and creates a Dataset of type Lego Dataset, adds various transformations for data augmentation
 # samples indices from the train data_set to create a split between training and validation set and saves both files under processed
 def make_train_data():
-    
     # the index dataframe provides the path as well as the naming of the classes
-    index = pd.read_csv(os.path.join(_PROJECT_ROOT,'data','external','lego_dataset', "index.csv"))
+    index = pd.read_csv(
+        os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "index.csv")
+    )
 
     # Train Validation Split taking 3/4 of the training set as validation
     train_index = index.sample(int(0.75 * len(index.index)), random_state=42)
@@ -90,8 +91,9 @@ def make_train_data():
 
 
 def make_test_Data():
-
-    test_index = pd.read_csv(os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "test.csv"))
+    test_index = pd.read_csv(
+        os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "test.csv")
+    )
 
     test_labels = test_index["class_id"] - 1
     test_files = test_index["path"]

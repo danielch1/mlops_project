@@ -39,6 +39,7 @@ if __name__ == "__main__":
 
     model = load_model(model_path)
     test_data = torch.load(os.path.join(root_directory,"data", "processed", "test_dataset.pth"))
+    test_data.set_path()
     predictions = predict(model, test_data)
     #labels = np.array([get_test_Data()[i][1] for i in range(len(get_test_Data()))])
 
