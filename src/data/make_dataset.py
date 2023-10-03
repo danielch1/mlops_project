@@ -2,28 +2,28 @@
 import pandas as pd
 import torch
 import os
-from pathlib import Path
-from torch.utils.data import Dataset, DataLoader
-import logging
 from torchvision import transforms
-import sys
 import torch
-from PIL import Image
 import random
 from src.data.Lego_Dataset import Lego_Dataset
 from src import _PROJECT_ROOT
+import string
+from typing import Union
 
 
 # processes the data from the external data and creates a Dataset of type Lego Dataset, adds various transformations for data augmentation
 # samples indices from the train data_set to create a split between training and validation set and saves both files under processed
-def make_dataset(file_path_index,transform):
+def make_dataset(file_path_index : pd.DataFrame,transform : transforms) -> Lego_Dataset:
     data_labels = file_path_index["class_id"] - 1
     data_files = file_path_index["path"]
     
     return Lego_Dataset(file_paths=data_files,labels=data_labels,transform=transform)
     
 
-def train_val_split(input_path_index):
+#implements the split between training and validation data
+#ToDo add Typing return value
+def train_val_split(input_path_index : pd.DataFrame) -> Union[pd.DataFrame, pd.DataFrame]:
+    # takes the path and label information from the provided index.csv file
     index = pd.read_csv(input_path_index)
     # Train Validation Split taking 3/4 of the training set as validation
     train_index = index.sample(int(0.75 * len(index.index)), random_state=42)
@@ -36,7 +36,7 @@ def train_val_split(input_path_index):
     return train_index,val_index
 
 # converts the label to the actual name of the minifigure
-def convert_label(label : int):
+def convert_label(label : int) -> string:
     meta_data = pd.read_csv(
         os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "metadata.csv")
     )
@@ -47,6 +47,7 @@ def convert_label(label : int):
 
 if __name__ == "__main__":
 
+    #defining the correct input and output paths for traing, validation and test set preprocessing
     train_input_index,val_input_index = train_val_split(os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "index.csv"))
     train_output_path = os.path.join(_PROJECT_ROOT, "data", "processed", "train_dataset.pth")
 
@@ -86,7 +87,7 @@ if __name__ == "__main__":
         ]
     )
 
-    torch.save(make_dataset(train_input_index,train_output_path,train_transforms),train_output_path)
-    torch.save(make_dataset(val_input_index,val_output_path,val_test_transforms),val_output_path)
-    torch.save(make_dataset(test_input_index,test_output_path,val_test_transforms),test_output_path)
+    torch.save(make_dataset(train_input_index,train_transforms),train_output_path)
+    torch.save(make_dataset(val_input_index,val_test_transforms),val_output_path)
+    torch.save(make_dataset(test_input_index,val_test_transforms),test_output_path)
 
