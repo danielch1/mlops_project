@@ -16,12 +16,15 @@ from src import _PROJECT_ROOT
 
 # processes the data from the external data and creates a Dataset of type Lego Dataset, adds various transformations for data augmentation
 # samples indices from the train data_set to create a split between training and validation set and saves both files under processed
-def make_train_data():
-    # the index dataframe provides the path as well as the naming of the classes
-    index = pd.read_csv(
-        os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "index.csv")
-    )
+def make_dataset(file_path_index,transform):
+    data_labels = file_path_index["class_id"] - 1
+    data_files = file_path_index["path"]
+    
+    return Lego_Dataset(file_paths=data_files,labels=data_labels,transform=transform)
+    
 
+def train_val_split(input_path_index):
+    index = pd.read_csv(input_path_index)
     # Train Validation Split taking 3/4 of the training set as validation
     train_index = index.sample(int(0.75 * len(index.index)), random_state=42)
 
@@ -30,14 +33,29 @@ def make_train_data():
     train_index.reset_index(inplace=True, drop=True)
     val_index = index.loc[remaining_indices].reset_index(drop=True)
 
-    # since the first label is 1 and torch starts from 0 the labels need to be corrected for that
-    train_labels = train_index["class_id"] - 1
-    train_files = train_index["path"]
+    return train_index,val_index
 
-    val_labels = val_index["class_id"] - 1
-    val_files = val_index["path"]
+# converts the label to the actual name of the minifigure
+def convert_label(label : int):
+    meta_data = pd.read_csv(
+        os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "metadata.csv")
+    )
+    return meta_data["minifigure_name"].loc[meta_data["class_id"] == label].to_string()
 
-    # Define transforms for validation and test data (typically no augmentation)
+
+# where to execute this from?
+
+if __name__ == "__main__":
+
+    train_input_index,val_input_index = train_val_split(os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "index.csv"))
+    train_output_path = os.path.join(_PROJECT_ROOT, "data", "processed", "train_dataset.pth")
+
+    val_output_path = os.path.join(_PROJECT_ROOT, "data", "processed", "val_dataset.pth")
+
+    test_input_index = pd.read_csv(os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "test.csv"))
+    test_output_path = os.path.join(_PROJECT_ROOT, "data", "processed", "test_dataset.pth")
+
+    #should be managed via config management
     train_transforms = transforms.Compose(
         [
             transforms.RandomResizedCrop(224),  # Random crop and resize to 224x224
@@ -54,11 +72,10 @@ def make_train_data():
             transforms.ToTensor(),  # Convert the image to a PyTorch tensor
             transforms.Normalize(
                 mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-            ),  # ImageNet statistics
+            ),
         ]
     )
-
-    val_transforms = transforms.Compose(
+    val_test_transforms = transforms.Compose(
         [
             transforms.Resize(256),  # Resize to 256x256
             transforms.CenterCrop(224),  # Center crop to 224x224
@@ -69,65 +86,7 @@ def make_train_data():
         ]
     )
 
-    # saving both Datasets to the processed directory within the project
-    torch.save(
-        Lego_Dataset(
-            file_paths=train_files,
-            labels=train_labels,
-            transform=train_transforms,
-        ),
-        os.path.join(_PROJECT_ROOT, "data", "processed", "train_dataset.pth"),
-    )
-    torch.save(
-        Lego_Dataset(
-            file_paths=val_files,
-            labels=val_labels,
-            transform=val_transforms,
-        ),
-        os.path.join(_PROJECT_ROOT, "data", "processed", "val_dataset.pth"),
-    )
+    torch.save(make_dataset(train_input_index,train_output_path,train_transforms),train_output_path)
+    torch.save(make_dataset(val_input_index,val_output_path,val_test_transforms),val_output_path)
+    torch.save(make_dataset(test_input_index,test_output_path,val_test_transforms),test_output_path)
 
-    # Creates the test data set from the external files and saves the torch Dataset to processed
-
-
-def make_test_Data():
-    test_index = pd.read_csv(
-        os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "test.csv")
-    )
-
-    test_labels = test_index["class_id"] - 1
-    test_files = test_index["path"]
-
-    test_transforms = transforms.Compose(
-        [
-            transforms.Resize(256),  # Resize to 256x256
-            transforms.CenterCrop(224),  # Center crop to 224x224
-            transforms.ToTensor(),  # Convert the image to a PyTorch tensor
-            transforms.Normalize(
-                mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-            ),  # ImageNet statistics
-        ]
-    )
-
-    torch.save(
-        Lego_Dataset(
-            file_paths=test_files,
-            labels=test_labels,
-            transform=test_transforms,
-        ),
-        os.path.join(_PROJECT_ROOT, "data", "processed", "test_dataset.pth"),
-    )
-
-
-# converts the label to the actual name of the minifigure
-def convert_label(label):
-    meta_data = pd.read_csv(
-        os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "metadata.csv")
-    )
-    return meta_data["minifigure_name"].loc[meta_data["class_id"] == label].to_string()
-
-
-# where to execute this from?
-if __name__ == "__main__":
-    make_train_data()
-    make_test_Data()
