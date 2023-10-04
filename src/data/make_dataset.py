@@ -8,23 +8,28 @@ import random
 from src.data.Lego_Dataset import Lego_Dataset
 from src import _PROJECT_ROOT
 import string
-from typing import Union
+from typing import Union, List
 from omegaconf import DictConfig
 import hydra
 
 
 # processes the data from the external data and creates a Dataset of type Lego Dataset, adds various transformations for data augmentation
 # samples indices from the train data_set to create a split between training and validation set and saves both files under processed
-def make_dataset(file_path_index : pd.DataFrame,transform : transforms) -> Lego_Dataset:
-    data_labels = file_path_index["class_id"] - 1
-    data_files = file_path_index["path"]
-    
-    return Lego_Dataset(file_paths=data_files,labels=data_labels,transform=transform)
-    
 
-#implements the split between training and validation data
-#ToDo add Typing return value
-def train_val_split(input_path_index : pd.DataFrame) -> Union[pd.DataFrame, pd.DataFrame]:
+def make_dataset(config : DictConfig,dataset_type : string) -> Lego_Dataset:
+    index_file = get_index_file(dataset_type)
+    data_labels = index_file["class_id"] - 1
+    data_files = index_file["path"]
+    dataset = Lego_Dataset(file_paths=data_files,
+                        labels=data_labels, 
+                        transform=get_transform(config,dataset_type = dataset_type))
+    #save_dataset(dataset= dataset, dataset_type = dataset_type)
+    return dataset
+
+
+# implements the split between training and validation data
+# ToDo add Typing return value
+def train_val_split(input_path_index: pd.DataFrame,) -> Union[pd.DataFrame, pd.DataFrame]:
     # takes the path and label information from the provided index.csv file
     index = pd.read_csv(input_path_index)
     # Train Validation Split taking 3/4 of the training set as validation
@@ -35,69 +40,76 @@ def train_val_split(input_path_index : pd.DataFrame) -> Union[pd.DataFrame, pd.D
     train_index.reset_index(inplace=True, drop=True)
     val_index = index.loc[remaining_indices].reset_index(drop=True)
 
-    return train_index,val_index
+    return train_index, val_index
+
 
 # converts the label to the actual name of the minifigure
-def convert_label(label : int) -> string:
+def convert_label(label: int) -> string:
     meta_data = pd.read_csv(
         os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "metadata.csv")
     )
     return meta_data["minifigure_name"].loc[meta_data["class_id"] == label].to_string()
 
 
-# where to execute this from?
-@hydra.main(config_path='../configs/', config_name='main.yaml')
-def create_data(config: DictConfig = ):
+#@hydra.main(config_path="../../config/", config_name="main.yaml")
+def get_transform(config: DictConfig,dataset_type : string):
+    augmentation_compositions = {}
 
-    augmentation : List[torch.nn.Module] = []
-    if "augmentation" in config:
-        for _, conf in config.augmentation.items():
+    augmentation = []
+
+    dataset_type = dataset_type + '_transforms'
+    # Check if the dataset type is present in the configuration
+    if dataset_type in config.augmentation.keys():
+        # Access the transformations for the current dataset type
+        dataset_transforms = config.augmentation[dataset_type]
+
+        # Iterate over the transformations defined in the configuration
+        for _, conf in dataset_transforms.items():
             if "_target_" in conf:
-                preprocess.append(hydra.utils.instantiate(conf))
+                # Instantiate and append the augmentation transform
+                augmentation.append(hydra.utils.instantiate(conf))
+    else: 
+        raise ValueError("Invalid dataset_type. It must be 'train', 'val', or 'test'.")
+    
+    
+    # Create a composition of all augmentation transforms for the current dataset type
+    return transforms.Compose(augmentation)
 
-    augmentation_compose = transforms.Compose(augmentation)
 
-    #defining the correct input and output paths for traing, validation and test set preprocessing
-    train_input_index,val_input_index = train_val_split(os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "index.csv"))
-    train_output_path = os.path.join(_PROJECT_ROOT, "data", "processed", "train_dataset.pth")
+def get_index_file(dataset_type) -> pd.DataFrame:
+    if dataset_type == 'train':
+        index,_ = train_val_split(
+        os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "index.csv")
+    )
+    elif dataset_type == 'val':
+        _,index = train_val_split(
+        os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "index.csv")
+    )
+    elif dataset_type == 'test':
+        index = pd.read_csv(
+            os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "test.csv")
+    )
+    else:
+        raise ValueError("Invalid dataset_type. It must be 'train', 'val', or 'test'.")
+    return index
 
-    val_output_path = os.path.join(_PROJECT_ROOT, "data", "processed", "val_dataset.pth")
 
-    test_input_index = pd.read_csv(os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "test.csv"))
-    test_output_path = os.path.join(_PROJECT_ROOT, "data", "processed", "test_dataset.pth")
+#saves processed data as tensors in a file
+def save_dataset(dataset : Lego_Dataset,dataset_type : string) -> None:
+    # Create an empty dictionary to store your data points.
+    data_dict = {'images': [], 'labels': []}
 
-    #should be managed via config management
-    train_transforms = transforms.Compose()
-    #     [
-    #         transforms.RandomResizedCrop(224),  # Random crop and resize to 224x224
-    #         transforms.RandomHorizontalFlip(),  # Randomly flip the image horizontally
-    #         transforms.RandomRotation(
-    #             degrees=30
-    #         ),  # Randomly rotate the image up to 30 degrees
-    #         transforms.RandomAffine(
-    #             degrees=0, translate=(0.1, 0.1)
-    #         ),  # Randomly translate the image
-    #         transforms.RandomPerspective(
-    #             distortion_scale=0.5, p=0.5
-    #         ),  # Apply perspective transformation
-    #         transforms.ToTensor(),  # Convert the image to a PyTorch tensor
-    #         transforms.Normalize(
-    #             mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-    #         ),
-    #     ]
-    # )
-    # val_test_transforms = transforms.Compose(
-    #     [
-    #         transforms.Resize(256),  # Resize to 256x256
-    #         transforms.CenterCrop(224),  # Center crop to 224x224
-    #         transforms.ToTensor(),  # Convert the image to a PyTorch tensor
-    #         transforms.Normalize(
-    #             mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-    #         ),  # ImageNet statistics
-    #     ]
-    # )
+    # Loop through the dataset and collect image tensors and labels.
+    for idx in range(len(dataset)):
+        image_tensor, label = dataset[idx]  # Get image tensor and label.
+        
+        # Append the image tensor and label to the dictionary.
+        data_dict['images'].append(image_tensor)
+        data_dict['labels'].append(label)
 
-    torch.save(make_dataset(train_input_index,train_transforms),train_output_path)
-    torch.save(make_dataset(val_input_index,val_test_transforms),val_output_path)
-    torch.save(make_dataset(test_input_index,val_test_transforms),test_output_path)
+        # Specify the directory and filename where you want to save the dictionary.
+        save_path = os.path.join(_PROJECT_ROOT, "data", "processed",dataset_type + '_dataset.pth')
+
+        # Save the dictionary containing all data points to a single file.
+        torch.save(data_dict, save_path)
 

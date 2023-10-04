@@ -1,27 +1,54 @@
 train_transforms:
-  train_transforms:
-    - name: torchvision.transforms.RandomResizedCrop
-      size: [224, 224]
-    - name: torchvision.transforms.RandomHorizontalFlip
-    - name: torchvision.transforms.RandomRotation
-      degrees: 30
-    - name: torchvision.transforms.RandomAffine
-      degrees: 0
-      translate: [0.1, 0.1]
-    - name: torchvision.transforms.RandomPerspective
-      distortion_scale: 0.5
-      p: 0.5
-    - name: torchvision.transforms.ToTensor
-    - name: torchvision.transforms.Normalize
-      mean: [0.485, 0.456, 0.406]
-      std: [0.229, 0.224, 0.225]
-
-val_test_transforms:
-  - name: torchvision.transforms.Resize
+  resize:
+    _target_: torchvision.transforms.Resize
     size: [256, 256]
-  - name: torchvision.transforms.CenterCrop
+  random_crop:
+    _target_: torchvision.transforms.RandomResizedCrop
     size: [224, 224]
-  - name: torchvision.transforms.ToTensor
-  - name: torchvision.transforms.Normalize
+  random_hor_flip:
+    _target_: torchvision.transforms.RandomHorizontalFlip
+  random_rot:
+    _target_: torchvision.transforms.RandomRotation
+    degrees: 30
+  random_affine:
+    _target_: torchvision.transforms.RandomAffine
+    degrees: 0
+    translate: [0.1, 0.1]
+  random_persp:
+    _target_: torchvision.transforms.RandomPerspective
+    distortion_scale: 0.5
+    p: 0.5
+  to_tensor:
+    _target_: torchvision.transforms.ToTensor
+  norma:
+    _target_: torchvision.transforms.Normalize
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+val_transforms:
+  resize:
+    _target_: torchvision.transforms.Resize
+    size: [256, 256]
+  crop:
+    _target_: torchvision.transforms.CenterCrop
+    size: [224, 224]
+  to_tensor:
+    _target_: torchvision.transforms.ToTensor
+  norma:
+    _target_: torchvision.transforms.Normalize
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+test_transforms:
+  resize:
+    _target_: torchvision.transforms.Resize
+    size: [256, 256]
+  crop:
+    _target_: torchvision.transforms.CenterCrop
+    size: [224, 224]
+  to_tensor:
+    _target_: torchvision.transforms.ToTensor
+  norma:
+    _target_: torchvision.transforms.Normalize
     mean: [0.485, 0.456, 0.406]
     std: [0.229, 0.224, 0.225]
