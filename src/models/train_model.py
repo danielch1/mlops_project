@@ -42,7 +42,7 @@ def train_model(cfg):
 
     print("Defining model...")
     # Model definition
-    model = timm.create_model('mobilenetv3_large_100', pretrained=cfg.experiment.hparams.take_pretrained_model, num_classes=num_classes)
+    model = timm.create_model('mobilenetv3_large_100', pretrained= True, num_classes=num_classes)
     optimizer = optim.Adam(model.parameters(), lr=cfg.experiment.hparams.learning_rate)
     criterion = nn.CrossEntropyLoss()
 

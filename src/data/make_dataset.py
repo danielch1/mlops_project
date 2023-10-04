@@ -51,7 +51,6 @@ def convert_label(label: int) -> string:
     return meta_data["minifigure_name"].loc[meta_data["class_id"] == label].to_string()
 
 
-#@hydra.main(config_path="../../config/", config_name="main.yaml")
 def get_transform(config: DictConfig,dataset_type : string):
     augmentation_compositions = {}
 
