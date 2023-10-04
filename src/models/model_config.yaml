@@ -1,7 +1,0 @@
-#config.yaml
-hparams:
-  batch_size: 32
-  take_pretrained_model: True
-  shuffle: True
-  learning_rate: 1e-3
-  num_epochs: 30

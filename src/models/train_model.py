@@ -9,7 +9,7 @@ import hydra
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 import wandb
-from src.data.make_dataset import Lego_Dataset
+from src.data.make_dataset import make_dataset
 
 
 current_script_directory = os.path.dirname(os.path.abspath(__file__))
@@ -30,22 +30,20 @@ wandb.init(
 )
 
 
-@hydra.main(config_name="model_config.yaml")
+@hydra.main(config_path='../../config/', config_name="main.yaml")
 def train_model(cfg):
     # Data Load
     print("Loading data...")
     num_classes = 38
-    trainset = torch.load(os.path.join(root_directory,"data", "processed", "train_dataset.pth"))
-    trainset.set_path()
-    val_set = torch.load(os.path.join(root_directory,"data", "processed", "val_dataset.pth"))
-    val_set.set_path
-    train_loader = DataLoader(trainset, batch_size=cfg.hparams.batch_size, shuffle=cfg.hparams.shuffle)
-    val_loader = DataLoader(val_set, batch_size= cfg.hparams.batch_size, shuffle = False)
+    trainset = make_dataset(cfg,dataset_type='train')
+    val_set = make_dataset(cfg,dataset_type='val')
+    train_loader = DataLoader(trainset, batch_size=cfg.experiment.hparams.batch_size, shuffle=cfg.experiment.hparams.shuffle)
+    val_loader = DataLoader(val_set, batch_size= cfg.experiment.hparams.batch_size, shuffle = False)
 
     print("Defining model...")
     # Model definition
-    model = timm.create_model('mobilenetv3_large_100', pretrained=cfg.hparams.take_pretrained_model, num_classes=num_classes)
-    optimizer = optim.Adam(model.parameters(), lr=cfg.hparams.learning_rate)
+    model = timm.create_model('mobilenetv3_large_100', pretrained= True, num_classes=num_classes)
+    optimizer = optim.Adam(model.parameters(), lr=cfg.experiment.hparams.learning_rate)
     criterion = nn.CrossEntropyLoss()
 
 
@@ -55,7 +53,7 @@ def train_model(cfg):
 
     print("Training start...")
     # Training loop
-    for ep in range(cfg.hparams.num_epochs):
+    for ep in range(cfg.experiment.hparams.num_epochs):
         total_loss = 0
         num_correct = 0
 
@@ -94,7 +92,7 @@ def train_model(cfg):
             for batch_idx, (val_inputs, val_labels) in enumerate(val_loader):
                 val_outputs = model(val_inputs)
                 val_loss = criterion(val_outputs, val_labels)
-                 
+                
                 total_val_loss += float(val_loss)
                 num_val_correct += int(torch.sum(torch.argmax(val_outputs, dim=1) == val_labels))
 
