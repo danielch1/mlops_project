@@ -30,7 +30,7 @@ wandb.init(
 )
 
 
-@hydra.main(config_name="model_config.yaml")
+@hydra.main(config_path='../../config/experiment', config_name="main.yaml")
 def train_model(cfg):
     # Data Load
     print("Loading data...")
