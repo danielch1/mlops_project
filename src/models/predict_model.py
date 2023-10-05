@@ -50,19 +50,19 @@ app = FastAPI()
 
 @app.post("/predict/", response_model=PredictionResponse)
 async def predict_image(image: UploadFile):
-    with initialize(version_base=None, config_path='../config/'):
+    with initialize(version_base=None, config_path='../../config/'):
         cfg = compose(config_name= 'main.yaml')
         model = load_model(
             model_path=os.path.join(_PROJECT_ROOT, "models", "mobilenetv3_fine_tuned.pth")
         )
 
         with torch.no_grad():
-            transforms = get_transform(config, dataset_type="test")
+            transforms = get_transform(cfg, dataset_type="test")
             img_bytes = await image.read()
             img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
             processed = transforms(img)
             outputs = model(processed.unsqueeze(0))
-            class_id = torch.argmax(outputs, dim=1).cpu().detach().numpy()
+            class_id = torch.argmax(outputs, dim=1).cpu().detach().numpy()[0]
         
         prediction = convert_label(class_id)
     return {"prediction": prediction}

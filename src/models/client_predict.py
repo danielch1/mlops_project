@@ -1,8 +1,8 @@
 import requests
 
 # Replace with the path to your image file
-image_path = "C:/Users/Lennart/Documents/GitHub/mlops_project/data/external/lego_dataset/test/005.jpg"
-url = "http://localhost:8000/predict/"
+image_path = "/Users/LeMarx/Documents/01_Projects/mlops_project/data/external/lego_dataset/test/005.jpg"
+url = "http://127.0.0.1:8000/predict/"
 
 # Send a POST request with the image file
 with open(image_path, "rb") as file:
