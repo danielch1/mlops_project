@@ -44,7 +44,7 @@ jobs:
         run: |
           flake8 .  --max-line-length 100
 
-  build-on-womdows:
+  build-on-windows:
     runs-on: windows-latest
 
     steps:
