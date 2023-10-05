@@ -7,8 +7,11 @@ from timm import create_model
 import hydra
 import numpy as np
 from omegaconf import DictConfig
+from fastapi import FastAPI, UploadFile
+from pydantic import BaseModel
 from PIL import Image
-
+import io
+from hydra import initialize, compose
 
 
 def load_model(model_path):
@@ -36,30 +39,41 @@ def predict_test(config):
 
     return predictions
 
-def predict(config : DictConfig,img : Image) -> str:
-
-    model = load_model(
-        model_path=os.path.join(_PROJECT_ROOT, "models", "mobilenetv3_fine_tuned.pth")
-    )
-
-    config
-
-    with torch.no_grad():
-        transforms = get_transform(config, dataset_type= "test")
-        image_rgb = img.convert("RGB")
-        processed = transforms(image_rgb).unsqueeze(0)
-        outputs = model(processed)
-        class_id = torch.argmax(outputs, dim=1).cpu().detach().numpy()[0]
-    prediction = convert_label(class_id)
-    return prediction
+class PredictionRequest(BaseModel):
+    image: UploadFile
 
 
+class PredictionResponse(BaseModel):
+    prediction: str
 
-@hydra.main(config_path="../../config/", config_name="main.yaml")
-def main(cfg):
-    prediction = predict(cfg,Image.open('C:/Users/Lennart/Documents/GitHub/mlops_project/data/external/lego_dataset/test/005.jpg'))
-    print(prediction)
+app = FastAPI()
+
+@app.post("/predict/", response_model=PredictionResponse)
+async def predict_image(image: UploadFile):
+    with initialize(version_base=None, config_path='../config/'):
+        cfg = compose(config_name= 'main.yaml')
+        model = load_model(
+            model_path=os.path.join(_PROJECT_ROOT, "models", "mobilenetv3_fine_tuned.pth")
+        )
+
+        with torch.no_grad():
+            transforms = get_transform(config, dataset_type="test")
+            img_bytes = await image.read()
+            img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+            processed = transforms(img)
+            outputs = model(processed.unsqueeze(0))
+            class_id = torch.argmax(outputs, dim=1).cpu().detach().numpy()
+        
+        prediction = convert_label(class_id)
+    return {"prediction": prediction}
 
 
 
-main()
+#@hydra.main(config_path="../../config/", config_name="main.yaml")
+#def main(cfg):
+#    prediction = predict(cfg,Image.open('C:/Users/Lennart/Documents/GitHub/mlops_project/data/external/lego_dataset/test/005.jpg'))
+#    print(prediction)
+
+
+
+#main()
