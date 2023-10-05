@@ -20,3 +20,4 @@ black
 fastapi
 uvicorn[standard]
 python-multipart
+pre-commit
