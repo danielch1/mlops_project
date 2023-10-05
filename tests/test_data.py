@@ -5,7 +5,6 @@ from src.data.make_dataset import make_dataset
 import pytest
 import numpy as np
 from hydra import initialize, compose
-from src.models.predict_model import predict
 
 
 @pytest.mark.parametrize(

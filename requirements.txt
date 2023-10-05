@@ -17,3 +17,6 @@ pytest
 hydra-core
 isort
 black
+fastapi
+uvicorn[standard]
+python-multipart
