@@ -10,8 +10,8 @@ repos:
       - id: isort
         args: ["--profile", "black"]
 
-  # - repo: https://github.com/pre-commit/mirrors-flake8
-  #   rev: v4.0.3
-  #   hooks:
-  #     - id: flake8
-  #       args: ["--max-line-length", "100"]
+  - repo: https://github.com/PyCQA/flake8.git
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        args: ["--max-line-length", "100"]
