@@ -2,23 +2,20 @@ name: "Run tests"
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  name: Run tests on all platforms
   build-on-ubuntu:
 
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/checkout@v3
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v4
       with:
         python-version: 3.9
     - name: Install dependencies
@@ -32,14 +29,13 @@ jobs:
         pytest -v
 
   build-on-macos:
-
     runs-on: macos-latest
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/checkout@v3
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v4
       with:
         python-version: 3.9
     - name: Install dependencies
@@ -53,14 +49,13 @@ jobs:
         pytest -v
 
   build-on-windows:
-
     runs-on: windows-latest
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/checkout@v3
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v4
       with:
         python-version: 3.9
     - name: Install dependencies

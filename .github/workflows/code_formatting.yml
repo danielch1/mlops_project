@@ -10,9 +10,7 @@ on:
     - cron: "0 15 * * *"  # run every day at 15:00 UTC
 
 jobs:
-  name: Check code formatting on all platforms
   build-on-ubuntu:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -30,7 +28,6 @@ jobs:
           flake8 .  --max-line-length 100
 
   build-on-macos:
-
     runs-on: macos-latest
 
     steps:
@@ -47,8 +44,7 @@ jobs:
         run: |
           flake8 .  --max-line-length 100
 
-  build-on-womdows:
-
+  build-on-windows:
     runs-on: windows-latest
 
     steps:
