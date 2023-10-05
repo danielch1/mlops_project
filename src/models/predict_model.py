@@ -1,17 +1,16 @@
-import torch
-from torch.utils.data import DataLoader
-from src.data.make_dataset import make_dataset,get_transform,convert_label
-from src import _PROJECT_ROOT
-import os
-from timm import create_model
-import hydra
-import numpy as np
-from omegaconf import DictConfig
-from fastapi import FastAPI, UploadFile
-from pydantic import BaseModel
-from PIL import Image
 import io
-from hydra import initialize, compose
+import os
+
+import torch
+from fastapi import FastAPI, UploadFile
+from hydra import compose, initialize
+from PIL import Image
+from pydantic import BaseModel
+from timm import create_model
+from torch.utils.data import DataLoader
+
+from src import _PROJECT_ROOT
+from src.data.make_dataset import convert_label, get_transform, make_dataset
 
 
 def load_model(model_path):
@@ -39,6 +38,7 @@ def predict_test(config):
 
     return predictions
 
+
 class PredictionRequest(BaseModel):
     image: UploadFile
 
@@ -46,14 +46,18 @@ class PredictionRequest(BaseModel):
 class PredictionResponse(BaseModel):
     prediction: str
 
+
 app = FastAPI()
+
 
 @app.post("/predict/", response_model=PredictionResponse)
 async def predict_image(image: UploadFile):
-    with initialize(version_base=None, config_path='../../config/'):
-        cfg = compose(config_name= 'main.yaml')
+    with initialize(version_base=None, config_path="../../config/"):
+        cfg = compose(config_name="main.yaml")
         model = load_model(
-            model_path=os.path.join(_PROJECT_ROOT, "models", "mobilenetv3_fine_tuned.pth")
+            model_path=os.path.join(
+                _PROJECT_ROOT, "models", "mobilenetv3_fine_tuned.pth"
+            )
         )
 
         with torch.no_grad():
@@ -63,17 +67,16 @@ async def predict_image(image: UploadFile):
             processed = transforms(img)
             outputs = model(processed.unsqueeze(0))
             class_id = torch.argmax(outputs, dim=1).cpu().detach().numpy()[0]
-        
+
         prediction = convert_label(class_id)
     return {"prediction": prediction}
 
 
-
-#@hydra.main(config_path="../../config/", config_name="main.yaml")
-#def main(cfg):
-#    prediction = predict(cfg,Image.open('C:/Users/Lennart/Documents/GitHub/mlops_project/data/external/lego_dataset/test/005.jpg'))
+# @hydra.main(config_path="../../config/", config_name="main.yaml")
+# def main(cfg):
+#    prediction = predict(cfg,Image.open('C:/Users/Lennart/Documents/GitHub/mlops_project/'
+#                                        'data/external/lego_dataset/test/005.jpg'))
 #    print(prediction)
 
 
-
-#main()
+# main()

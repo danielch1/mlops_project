@@ -1,7 +1,10 @@
 import requests
 
 # Replace with the path to your image file
-image_path = "/Users/LeMarx/Documents/01_Projects/mlops_project/data/external/lego_dataset/test/005.jpg"
+image_path = (
+    "/Users/LeMarx/Documents/01_Projects/mlops_project/"
+    "data/external/lego_dataset/test/005.jpg"
+)
 url = "http://127.0.0.1:8000/predict/"
 
 # Send a POST request with the image file

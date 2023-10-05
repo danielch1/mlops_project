@@ -58,7 +58,6 @@ def convert_label(label: int) -> string:
 
 
 def get_transform(config: DictConfig, dataset_type: string):
-
     augmentation = []
 
     dataset_type = dataset_type + "_transforms"
