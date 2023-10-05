@@ -1,9 +1,9 @@
 import os
 import random
+
 import torch
-from torch.utils.data import Dataset
 from PIL import Image
-import sys
+
 from src import _PROJECT_ROOT
 
 
