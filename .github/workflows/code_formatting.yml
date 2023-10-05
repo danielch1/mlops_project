@@ -12,7 +12,7 @@ on:
 jobs:
   name: Check code formatting on all platforms
   build-on-ubuntu:
-    name: "Code formatting check on Ubuntu"
+
     runs-on: ubuntu-latest
 
     steps:
@@ -30,7 +30,7 @@ jobs:
           flake8 .  --max-line-length 100
 
   build-on-macos:
-    name: "Code formatting check on macOS"
+
     runs-on: macos-latest
 
     steps:
@@ -48,7 +48,7 @@ jobs:
           flake8 .  --max-line-length 100
 
   build-on-womdows:
-    name: "Code formatting check on Windows"
+
     runs-on: windows-latest
 
     steps:
