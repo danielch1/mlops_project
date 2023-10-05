@@ -10,6 +10,7 @@ on:
     - cron: "0 15 * * *"  # run every day at 15:00 UTC
 
 jobs:
+  name: Check code formatting on all platforms
   build-on-ubuntu:
     runs-on: ubuntu-latest
 
