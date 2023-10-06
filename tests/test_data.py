@@ -2,8 +2,11 @@ import numpy as np
 import pytest
 import torch
 from hydra import compose, initialize
-
+from src.models.predict_model import predict_image
 from src.data.make_dataset import make_dataset
+from PIL import Image
+import os
+from tests import _PROJECT_ROOT
 
 
 @pytest.mark.parametrize(
@@ -24,8 +27,7 @@ from src.data.make_dataset import make_dataset
     ],
 )
 
-# @hydra.main(config_path="../../config/", config_name="main.yaml") # noqa: E304
-def data_shape_test(dataset_type, expected_data_shape):
+def test_data_shape(dataset_type : str, expected_data_shape : torch.Size):
     with initialize(version_base=None, config_path="../config/"):
         cfg = compose(config_name="main.yaml")
         # Load dataset from file
