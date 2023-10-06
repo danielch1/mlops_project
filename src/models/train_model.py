@@ -5,6 +5,7 @@ import timm
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from dotenv import load_dotenv
 from torch.utils.data import DataLoader
 
 import wandb
@@ -13,10 +14,21 @@ from src.data.make_dataset import make_dataset
 current_script_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.abspath(os.path.join(current_script_directory, ".."))
 root_directory = os.path.abspath(os.path.join(parent_directory, ".."))
+save_path = os.path.join(root_directory, "models", "mobilenetv3_fine_tuned.pth")
+
+# Initialize wandb with your API key and project name (including the team name)
+# Load environment variables from .env file
+load_dotenv()
+api_key = os.environ.get("WANDB_API_KEY")
+project_name = os.environ.get("WANDB_PROJECT")
+team_name = os.environ.get("WANDB_TEAM")
+
+os.environ["WANDB_MODE"] = "online"
+wandb.login(key=api_key, relogin=True)
 
 wandb.init(
-    # set the wandb project where this run will be logged
-    project="my-awesome-project",
+    project=project_name,
+    entity=team_name,
     # track hyperparameters and run metadata
     config={
         "learning_rate": 0.003,
@@ -52,7 +64,7 @@ def train_model(cfg):
     criterion = nn.CrossEntropyLoss()
 
     best_val_loss = float("inf")
-    patience = 5  # Number of epochs to wait for improvement
+    patience = 2  # Number of epochs to wait for improvement
     epochs_without_improvement = 0
 
     print("Training start...")
@@ -123,10 +135,7 @@ def train_model(cfg):
             epochs_without_improvement = 0
 
             # save the best model checkpoint here
-            torch.save(
-                model.state_dict(),
-                os.path.join(root_directory, "models", "mobilenetv3_fine_tuned.pth"),
-            )
+            torch.save(model.state_dict(), save_path)
         else:
             epochs_without_improvement += 1
 
@@ -138,6 +147,7 @@ def train_model(cfg):
     # Save the trained model
 
     print("Best Model saved!")
+    print("Save path: ", save_path)
 
 
 # Run training, save model and print metrics

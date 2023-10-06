@@ -1,0 +1,8 @@
+{
+    "name" : "Lego_Minifigures",
+    "build":{
+        "dockerfile":"Dockerfile",
+        "context": ".."
+    }
+
+}
