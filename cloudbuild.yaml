@@ -14,7 +14,7 @@ steps:
 
   # Step 3: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/mlops-project-401218/docker-image:main', '.']
+    args: ['build', '-t', 'gcr.io/mlops-project-401218/docker-image:main', '-f', '.devcontainer/Dockerfile', '.']
     
   # Step 4: Push the Docker image to Google Container Registry (GCR)
   - name: 'gcr.io/cloud-builders/docker'
