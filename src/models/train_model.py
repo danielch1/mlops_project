@@ -64,6 +64,7 @@ def train_model(cfg):
     for ep in range(cfg.experiment.hparams.num_epochs):
         with profile(
             activities=[ProfilerActivity.CPU],
+            schedule=torch.profiler.schedule(wait=2, warmup=3, active=3, repeat=1),
             record_shapes=True,
             profile_memory=True,
             on_trace_ready=tensorboard_trace_handler(os.path.join(".","log","mobilenetv3")),
