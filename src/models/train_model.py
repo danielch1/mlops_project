@@ -10,6 +10,10 @@ from torch.utils.data import DataLoader
 import wandb
 from src.data.make_dataset import make_dataset
 
+from torch.profiler import profile, ProfilerActivity
+from torch.profiler import tensorboard_trace_handler
+from torch.profiler import record_function
+
 current_script_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.abspath(os.path.join(current_script_directory, ".."))
 root_directory = os.path.abspath(os.path.join(parent_directory, ".."))
@@ -22,7 +26,7 @@ wandb.init(
         "learning_rate": 0.003,
         "architecture": "mobilenetv3",
         "dataset": "Lego-Minifigures",
-        "epochs": 10,
+        "epochs": 30,
     },
 )
 
@@ -58,82 +62,93 @@ def train_model(cfg):
     print("Training start...")
     # Training loop
     for ep in range(cfg.experiment.hparams.num_epochs):
-        total_loss = 0
-        num_correct = 0
+        with profile(
+            activities=[ProfilerActivity.CPU],
+            record_shapes=True,
+            profile_memory=True,
+            on_trace_ready=tensorboard_trace_handler("./log/resnet18"),
+        ) as prof:
+            total_loss = 0
+            num_correct = 0
 
-        for batch_idx, (inputs, labels) in enumerate(train_loader):
-            model.train()
-            optimizer.zero_grad()
-            y_hat = model(inputs)
-            batch_loss = criterion(y_hat, labels)
-            batch_loss.backward()
-            optimizer.step()
+            for batch_idx, (inputs, labels) in enumerate(train_loader):
+                model.train()
+                optimizer.zero_grad()
+                y_hat = model(inputs)
+                with record_function("model_loss"):
+                    batch_loss = criterion(y_hat, labels)
+                with record_function('backward'):
+                    batch_loss.backward()
+                    optimizer.step()
+                prof.step()
 
-            total_loss += float(batch_loss)
-            num_correct += int(torch.sum(torch.argmax(y_hat, dim=1) == labels))
+                total_loss += float(batch_loss)
+                num_correct += int(torch.sum(torch.argmax(y_hat, dim=1) == labels))
+
+                print(
+                    "EPOCH: {:5}    BATCH: {:5}/{:5}    LOSS: {:.3f}".format(
+                        ep, batch_idx, len(train_loader), batch_loss
+                    )
+                )
+
+            epoch_loss = total_loss / len(trainset)
+            epoch_accuracy = num_correct / len(trainset)
 
             print(
-                "EPOCH: {:5}    BATCH: {:5}/{:5}    LOSS: {:.3f}".format(
-                    ep, batch_idx, len(train_loader), batch_loss
+                "EPOCH: {:5}    LOSS: {:.3f}    ACCURACY: {:.3f}".format(
+                    ep, epoch_loss, epoch_accuracy
                 )
             )
 
-        epoch_loss = total_loss / len(trainset)
-        epoch_accuracy = num_correct / len(trainset)
+            model.eval()
+            total_val_loss = 0
+            num_val_correct = 0
 
-        print(
-            "EPOCH: {:5}    LOSS: {:.3f}    ACCURACY: {:.3f}".format(
-                ep, epoch_loss, epoch_accuracy
-            )
-        )
+            with torch.no_grad():
+                for batch_idx, (val_inputs, val_labels) in enumerate(val_loader):
+                    val_outputs = model(val_inputs)
+                    val_loss = criterion(val_outputs, val_labels)
 
-        model.eval()
-        total_val_loss = 0
-        num_val_correct = 0
+                    total_val_loss += float(val_loss)
+                    num_val_correct += int(
+                        torch.sum(torch.argmax(val_outputs, dim=1) == val_labels)
+                    )
 
-        with torch.no_grad():
-            for batch_idx, (val_inputs, val_labels) in enumerate(val_loader):
-                val_outputs = model(val_inputs)
-                val_loss = criterion(val_outputs, val_labels)
-
-                total_val_loss += float(val_loss)
-                num_val_correct += int(
-                    torch.sum(torch.argmax(val_outputs, dim=1) == val_labels)
+            val_epoch_loss = total_val_loss / len(val_set)
+            val_epoch_accuracy = num_val_correct / len(val_set)
+            print(
+                "EPOCH: {:5}    VAL LOSS: {:.3f}    VAL ACCURACY: {:.3f}".format(
+                    ep, val_epoch_loss, val_epoch_accuracy
                 )
-
-        val_epoch_loss = total_val_loss / len(val_set)
-        val_epoch_accuracy = num_val_correct / len(val_set)
-        print(
-            "EPOCH: {:5}    VAL LOSS: {:.3f}    VAL ACCURACY: {:.3f}".format(
-                ep, val_epoch_loss, val_epoch_accuracy
             )
-        )
 
-        wandb.log(
-            {
-                "train_acc": epoch_accuracy,
-                "val_acc": val_epoch_accuracy,
-                "train_loss": batch_loss,
-                "val_loss": val_loss,
-            }
-        )
-
-        if val_epoch_loss < best_val_loss:
-            best_val_loss = val_epoch_loss
-            epochs_without_improvement = 0
-
-            # save the best model checkpoint here
-            torch.save(
-                model.state_dict(),
-                os.path.join(root_directory, "models", "mobilenetv3_fine_tuned.pth"),
+            wandb.log(
+                {
+                    "train_acc": epoch_accuracy,
+                    "val_acc": val_epoch_accuracy,
+                    "train_loss": batch_loss,
+                    "val_loss": val_loss,
+                }
             )
-        else:
-            epochs_without_improvement += 1
 
-        # Check if we should stop training
-        if epochs_without_improvement >= patience:
-            print(f"Early stopping after {ep + 1} epochs")
-            break
+            if val_epoch_loss < best_val_loss:
+                best_val_loss = val_epoch_loss
+                epochs_without_improvement = 0
+
+                # save the best model checkpoint here
+                torch.save(
+                    model.state_dict(),
+                    os.path.join(
+                        root_directory, "models", "mobilenetv3_fine_tuned.pth"
+                    ),
+                )
+            else:
+                epochs_without_improvement += 1
+
+            # Check if we should stop training
+            if epochs_without_improvement >= patience:
+                print(f"Early stopping after {ep + 1} epochs")
+                break
 
     # Save the trained model
 
