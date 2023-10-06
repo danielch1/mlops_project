@@ -1,9 +1,9 @@
 # cloudbuild.yaml
 
 steps:
-  # Step 1: Checkout the code from the specified GitHub branch
-  - name: 'gcr.io/cloud-builders/git'
-    args: ['clone', '--branch', 'main', 'https://github.com/danielch1/mlops_project', '.']
+  # # Step 1: Checkout the code from the specified GitHub branch
+  # - name: 'gcr.io/cloud-builders/git'
+  #   args: ['clone', '--branch', 'main', 'https://github.com/danielch1/mlops_project', '.']
 
   # Step 2: Create a .env file using substitution variables
   - name: 'gcr.io/cloud-builders/docker'
