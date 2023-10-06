@@ -4,4 +4,6 @@ hparams:
   take_pretrained_model: True
   shuffle: True
   learning_rate: 1e-3
-  num_epochs: 30
+  num_epochs: 15
+
+version_base: 1.0
