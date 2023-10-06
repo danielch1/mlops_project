@@ -5,6 +5,7 @@ import timm
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from dotenv import load_dotenv
 from torch.utils.data import DataLoader
 
 import wandb
@@ -14,9 +15,20 @@ current_script_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.abspath(os.path.join(current_script_directory, ".."))
 root_directory = os.path.abspath(os.path.join(parent_directory, ".."))
 
+
+# Initialize wandb with your API key and project name (including the team name)
+# Load environment variables from .env file
+load_dotenv()
+api_key = os.environ.get("WANDB_API_KEY")
+project_name = os.environ.get("WANDB_PROJECT")
+team_name = os.environ.get("WANDB_TEAM")
+
+os.environ["WANDB_MODE"] = "online"
+wandb.login(key=api_key, relogin=True)
+
 wandb.init(
-    # set the wandb project where this run will be logged
-    project="my-awesome-project",
+    project=project_name,
+    entity=team_name,
     # track hyperparameters and run metadata
     config={
         "learning_rate": 0.003,
