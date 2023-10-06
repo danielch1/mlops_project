@@ -27,8 +27,8 @@ os.environ["WANDB_MODE"] = "online"
 wandb.login(key=api_key, relogin=True)
 
 wandb.init(
-    project=project_name,
-    entity=team_name,
+    project="my-awesome-project",
+    entity="the_positive_thinkers",
     # track hyperparameters and run metadata
     config={
         "learning_rate": 0.003,
