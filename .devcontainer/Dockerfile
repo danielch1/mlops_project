@@ -9,6 +9,7 @@ COPY requirements.txt requirements.txt
 COPY setup.py setup.py
 COPY src/ src/
 COPY data/ data/
+COPY .env .
 
 VOLUME /models
 
