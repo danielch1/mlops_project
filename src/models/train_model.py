@@ -66,7 +66,7 @@ def train_model(cfg):
             activities=[ProfilerActivity.CPU],
             record_shapes=True,
             profile_memory=True,
-            on_trace_ready=tensorboard_trace_handler("./log/resnet18"),
+            on_trace_ready=tensorboard_trace_handler(os.path.join(".","log","mobilenetv3")),
         ) as prof:
             total_loss = 0
             num_correct = 0
