@@ -1,0 +1,22 @@
+# cloudbuild.yaml
+
+steps:
+  # Step 1: Checkout the code from the specified GitHub branch
+  - name: 'gcr.io/cloud-builders/git'
+    args: ['clone', '--branch', 'main', 'https://github.com/danielch1/mlops_project', '.']
+
+  # Step 2: Create a .env file using substitution variables
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: '/bin/sh'
+    args:
+      - '-c'
+      - 'echo "WANDB_API_KEY=${_WANDB_API_KEY}" > .env'
+
+  # Step 3: Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/mlops-project-401218/docker-image:main', '.']
+    
+  # Step 4: Push the Docker image to Google Container Registry (GCR)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/mlops-project-401218/docker-image:main']
+
