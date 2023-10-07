@@ -59,6 +59,9 @@ target/
 # DotEnv configuration
 .env
 
+# Keys
+mlops-project*.json
+
 # Database
 *.db
 *.rdb
@@ -89,3 +92,5 @@ models/
 # Mypy cache
 .mypy_cache/
 
+/data
+/models
