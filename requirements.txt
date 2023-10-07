@@ -21,4 +21,4 @@ fastapi
 uvicorn[standard]
 python-multipart
 pre-commit
-dvc
+dvc[gs]
