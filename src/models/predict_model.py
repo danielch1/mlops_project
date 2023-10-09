@@ -60,11 +60,6 @@ async def predict_image(image: UploadFile):
 
     with initialize(version_base=None, config_path="../../config/"):
         cfg = compose(config_name="main.yaml")
-        model = load_model(
-            model_path=os.path.join(
-                _PROJECT_ROOT, "models", "mobilenetv3_fine_tuned.pth"
-            )
-        )
         model_blob_name = "mobilenetv3_fine_tuned.pth"
 
         # Load the model state dictionary from Google Cloud Storage
@@ -89,13 +84,3 @@ async def predict_image(image: UploadFile):
 
         prediction = convert_label(class_id)
     return {"prediction": prediction}
-
-
-# @hydra.main(config_path="../../config/", config_name="main.yaml")
-# def main(cfg):
-#    prediction = predict(cfg,Image.open('C:/Users/Lennart/Documents/GitHub/mlops_project/'
-#                                        'data/external/lego_dataset/test/005.jpg'))
-#    print(prediction)
-
-
-# main()
