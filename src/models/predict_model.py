@@ -49,14 +49,15 @@ class PredictionResponse(BaseModel):
 
 
 app = FastAPI()
-storage_client = storage.Client()
-bucket_name = "mlops-project-ss2023-bucket"
-
-model_blob_name = "mobilenetv3_fine_tuned.pth"
 
 
 @app.post("/predict/", response_model=PredictionResponse)
 async def predict_image(image: UploadFile):
+    storage_client = storage.Client()
+    bucket_name = "mlops-project-ss2023-bucket"
+
+    model_blob_name = "mobilenetv3_fine_tuned.pth"
+
     with initialize(version_base=None, config_path="../../config/"):
         cfg = compose(config_name="main.yaml")
         model = load_model(
