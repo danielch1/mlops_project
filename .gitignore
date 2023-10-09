@@ -91,3 +91,7 @@ mlops-project*.json
 # Mypy cache
 .mypy_cache/
 
+# training cache
+wandb/
+outputs/
+

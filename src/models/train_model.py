@@ -39,7 +39,7 @@ wandb.init(
 )
 
 
-@hydra.main(config_path="../../config/", config_name="main.yaml")
+# @hydra.main(config_path="../../config/", config_name="main.yaml")
 def train_model(cfg):
     # Data Load
     print("Loading data...")
@@ -150,5 +150,27 @@ def train_model(cfg):
     print("Save path: ", save_path)
 
 
+def save_to_bucket(local_model_path, bucket_name, bucket_save_path):
+    from utils import save_model_to_bucket
+
+    print(f"Saving file {local_model_path} to bucket: {bucket_name}")
+
+    save_model_to_bucket(local_model_path, bucket_name, bucket_save_path)
+
+    print(f"Model saved to bucket: {bucket_name}, with path: {bucket_save_path}")
+
+
 # Run training, save model and print metrics
-train_model()
+@hydra.main(config_path="../../config/", config_name="main.yaml")
+def main(cfg):
+    train_model(cfg)
+
+    if cfg.experiment.save_to_bucket:
+        save_to_bucket(
+            save_path,
+            cfg.experiment.bucket_name,
+            bucket_save_path="mobilenetv3_fine_tuned.pth",
+        )
+
+
+main()
