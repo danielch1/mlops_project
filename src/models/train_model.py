@@ -5,14 +5,16 @@ import timm
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.profiler import (
+    ProfilerActivity,
+    profile,
+    record_function,
+    tensorboard_trace_handler,
+)
 from torch.utils.data import DataLoader
 
 import wandb
 from src.data.make_dataset import make_dataset
-
-from torch.profiler import profile, ProfilerActivity
-from torch.profiler import tensorboard_trace_handler
-from torch.profiler import record_function
 
 current_script_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.abspath(os.path.join(current_script_directory, ".."))
@@ -58,17 +60,19 @@ def train_model(cfg):
     best_val_loss = float("inf")
     patience = 5  # Number of epochs to wait for improvement
     epochs_without_improvement = 0
-
     print("Training start...")
     # Training loop
-    for ep in range(cfg.experiment.hparams.num_epochs):
-        with profile(
-            activities=[ProfilerActivity.CPU],
-            schedule=torch.profiler.schedule(wait=2, warmup=3, active=3, repeat=1),
-            record_shapes=True,
-            profile_memory=True,
-            on_trace_ready=tensorboard_trace_handler(os.path.join(".","log","mobilenetv3")),
-        ) as prof:
+    with profile(
+        activities=[ProfilerActivity.CPU],
+        schedule=torch.profiler.schedule(wait=2, warmup=3, active=1, repeat=1),
+        record_shapes=True,
+        profile_memory=True,
+        on_trace_ready=tensorboard_trace_handler(
+            os.path.join(".", "log", "mobilenetv3")
+        ),
+    ) as prof:
+        for ep in range(cfg.experiment.hparams.num_epochs):
+
             total_loss = 0
             num_correct = 0
 
@@ -78,7 +82,7 @@ def train_model(cfg):
                 y_hat = model(inputs)
                 with record_function("model_loss"):
                     batch_loss = criterion(y_hat, labels)
-                with record_function('backward'):
+                with record_function("backward"):
                     batch_loss.backward()
                     optimizer.step()
                 prof.step()
