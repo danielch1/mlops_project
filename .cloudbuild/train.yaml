@@ -1,0 +1,22 @@
+# cloudbuild.yaml
+
+steps:
+  # # Step 0: Checkout the code from the specified GitHub branch
+  # - name: 'gcr.io/cloud-builders/git'
+  #   args: ['clone', '--branch', 'main', 'https://github.com/danielch1/mlops_project', '.']
+
+  # Step 1: Create a .env file using substitution variables
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: '/bin/sh'
+    args:
+      - '-c'
+      - 'echo "WANDB_API_KEY=${_WANDB_API_KEY}" > .env'
+
+  # Step 2a: Build the Docker image for training
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/mlops-project-401218/train-image:latest', '-f', '.devcontainer/train.dockerfile', '.']
+    
+    # Step 2b: Push the Docker image to Google Container Registry (GCR)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/mlops-project-401218/train-image:latest']
+
