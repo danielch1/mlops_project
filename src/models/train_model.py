@@ -160,9 +160,32 @@ def save_to_bucket(local_model_path, bucket_name, bucket_save_path):
     print(f"Model saved to bucket: {bucket_name}, with path: {bucket_save_path}")
 
 
+# ONLY DEBUGGING FUNCTION
+def try_to_save_to_bucket(bucket_name):
+    # Define the text content you want to write to the file
+    text_content = "This is a short text file created in Python."
+    file_path = "debugging_text_file.txt"
+
+    # Open the file in write mode and write the content
+    with open(file_path, "w") as file:
+        file.write(text_content)
+
+    print(
+        f"Text file '{file_path}' has been created and saved with content:\n{text_content}"
+    )
+
+    save_to_bucket(file_path, bucket_name, file_path)
+
+
 # Run training, save model and print metrics
 @hydra.main(config_path="../../config/", config_name="main.yaml")
 def main(cfg):
+
+    # Experiment for credentials:
+    try_to_save_to_bucket(
+        cfg.experiment.bucket_name,
+    )
+
     train_model(cfg)
 
     if cfg.experiment.save_to_bucket:
