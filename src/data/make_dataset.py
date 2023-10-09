@@ -54,7 +54,10 @@ def convert_label(label: int) -> string:
     meta_data = pd.read_csv(
         os.path.join(_PROJECT_ROOT, "data", "external", "lego_dataset", "metadata.csv")
     )
-    return meta_data["minifigure_name"].loc[meta_data["class_id"] == label].to_string()
+
+    return (
+        meta_data["minifigure_name"].loc[meta_data["class_id"] == label + 1].to_string()
+    )
 
 
 def get_transform(config: DictConfig, dataset_type: string):
