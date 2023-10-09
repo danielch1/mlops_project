@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt requirements.txt
 COPY setup.py setup.py
 COPY src/ src/
+COPY data/ data/
 COPY config/ config/
 COPY .env .
 
