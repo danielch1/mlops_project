@@ -3,6 +3,7 @@ import os
 
 import torch
 from fastapi import FastAPI, UploadFile
+from google.cloud import storage
 from hydra import compose, initialize
 from PIL import Image
 from pydantic import BaseModel
@@ -48,6 +49,10 @@ class PredictionResponse(BaseModel):
 
 
 app = FastAPI()
+storage_client = storage.Client()
+bucket_name = "mlops-project-ss2023-bucket"
+
+model_blob_name = "mobilenetv3_fine_tuned.pth"
 
 
 @app.post("/predict/", response_model=PredictionResponse)
@@ -59,6 +64,19 @@ async def predict_image(image: UploadFile):
                 _PROJECT_ROOT, "models", "mobilenetv3_fine_tuned.pth"
             )
         )
+        model_blob_name = "mobilenetv3_fine_tuned.pth"
+
+        # Load the model state dictionary from Google Cloud Storage
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(model_blob_name)
+        model_bytes = blob.download_as_bytes()
+
+        # Load  PyTorch model with state dictionary
+        model = create_model("mobilenetv3_large_100", pretrained=False, num_classes=38)
+        model.load_state_dict(
+            torch.load(io.BytesIO(model_bytes), map_location=torch.device("cpu"))
+        )
+        model.eval()
 
         with torch.no_grad():
             transforms = get_transform(cfg, dataset_type="test")
