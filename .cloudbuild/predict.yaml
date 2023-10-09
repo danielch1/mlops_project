@@ -12,19 +12,11 @@ steps:
       - '-c'
       - 'echo "WANDB_API_KEY=${_WANDB_API_KEY}" > .env'
 
-  # Step 2a: Build the Docker image for training
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/mlops-project-401218/train-image:latest', '-f', '.devcontainer/train.dockerfile', '.']
-    
-    # Step 2b: Push the Docker image to Google Container Registry (GCR)
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/mlops-project-401218/train-image:latest']
-
-  # Step 3a: Build the Docker image for prediction
+  # Step 2a: Build the Docker image for prediction
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/mlops-project-401218/predict-image:latest', '-f', '.devcontainer/prediction.dockerfile', '.']
     
-    # Step 3b: Push the Docker image to Google Container Registry (GCR)
+    # Step 2b: Push the Docker image to Google Container Registry (GCR)
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/mlops-project-401218/predict-image:latest']
 
