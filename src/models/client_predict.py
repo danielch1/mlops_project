@@ -5,7 +5,7 @@ image_path = (
     "/Users/LeMarx/Documents/01_Projects/mlops_project/"
     "data/external/lego_dataset/test/005.jpg"
 )
-url = "http://127.0.0.1:8000/predict/"
+url = "https://inference-mmhol5imca-ey.a.run.app/predict/"
 
 # Send a POST request with the image file
 with open(image_path, "rb") as file:
