@@ -18,6 +18,12 @@ url = "https://inference-mmhol5imca-ey.a.run.app/predict/"
 # url = "http://127.0.0.1:8000/predict"
 
 
+# Draw a test image
+def draw_test_image(all_items):
+    random_item = random.choice(all_items)
+    return os.path.join(test_path, random_item)
+
+
 # Send a POST request with the image file
 def send_predict_request(url, image_path):
     with open(image_path, "rb") as file:
@@ -46,5 +52,6 @@ def process_response(response):
 
 
 if __name__ == "__main__":
+    image_path = draw_test_image(all_items)
     response = send_predict_request(url, image_path)
     process_response(response)
