@@ -63,5 +63,5 @@ t_statistic_contrast, p_value_contrast = stats.ttest_ind(train_contrast, test_co
 alpha = 0.05
 
 print(p_value_brightness > alpha)
-print(p_value_contrast) > alpha
+print(p_value_contrast > alpha)
 # Compare the statistics
