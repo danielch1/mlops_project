@@ -4,6 +4,7 @@ from typing import List, Tuple
 import numpy as np
 import pandas as pd
 from PIL import Image
+from scipy import stats
 
 from src import _PROJECT_ROOT
 
@@ -11,7 +12,9 @@ from src import _PROJECT_ROOT
 
 
 # Function to calculate average brightness and contrast for a set of images using Pillow
-def calculate_stats(data_dir: str, file_paths: List[str]) -> Tuple[float, float]:
+def calculate_stats(
+    data_dir: str, file_paths: List[str]
+) -> Tuple[List[float], List[float]]:
     # Initialize lists to store the average brightness and contrast values
     avg_brightness_values = []
     avg_contrast_values = []
@@ -35,11 +38,7 @@ def calculate_stats(data_dir: str, file_paths: List[str]) -> Tuple[float, float]
             avg_brightness_values.append(avg_brightness)
             avg_contrast_values.append(avg_contrast)
 
-    # Calculate mean average brightness and mean contrast
-    mean_avg_brightness = np.mean(avg_brightness_values)
-    mean_avg_contrast = np.mean(avg_contrast_values)
-
-    return mean_avg_brightness, mean_avg_contrast
+    return avg_brightness_values, avg_contrast_values
 
 
 # Calculate statistics for the training and test sets separately
@@ -51,17 +50,18 @@ train_index_file = pd.read_csv(os.path.join(data_path, "index.csv"))
 test_index_file = pd.read_csv(os.path.join(data_path, "test.csv"))
 
 
-train_mean_brightness, train_mean_contrast = calculate_stats(
+train_avg_brightness, train_contrast = calculate_stats(
     data_path, train_index_file["path"]
 )
-test_mean_brightness, test_mean_contrast = calculate_stats(
-    data_path, test_index_file["path"]
-)
+test_avg_brightness, test_contrast = calculate_stats(data_path, test_index_file["path"])
 
+t_statistic_brightness, p_value_brightness = stats.ttest_ind(
+    train_avg_brightness, test_avg_brightness
+)
+t_statistic_contrast, p_value_contrast = stats.ttest_ind(train_contrast, test_contrast)
+
+alpha = 0.05
+
+print(p_value_brightness > alpha)
+print(p_value_contrast) > alpha
 # Compare the statistics
-print(
-    f"Training Set - Avg Brightness: {train_mean_brightness}, Avg Contrast: {train_mean_contrast}"
-)
-print(
-    f"Test Set - Avg Brightness: {test_mean_brightness}, Avg Contrast: {test_mean_contrast}"
-)
