@@ -22,3 +22,4 @@ uvicorn[standard]
 python-multipart
 pre-commit
 google-cloud-storage
+matplotlib
