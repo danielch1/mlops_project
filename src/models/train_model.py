@@ -26,21 +26,21 @@ team_name = os.environ.get("WANDB_TEAM")
 os.environ["WANDB_MODE"] = "online"
 wandb.login(key=api_key, relogin=True)
 
-wandb.init(
-    project="my-awesome-project",
-    entity="the_positive_thinkers",
-    # track hyperparameters and run metadata
-    config={
-        "learning_rate": 0.0001,
-        "architecture": "mobilenetv3",
-        "dataset": "Lego-Minifigures",
-        "epochs": 15,
-    },
-)
-
 
 # @hydra.main(config_path="../../config/", config_name="main.yaml")
 def train_model(cfg):
+    wandb.init(
+        project="my-awesome-project",
+        entity="the_positive_thinkers",
+        # track hyperparameters and run metadata
+        config={
+            "learning_rate": cfg.experiment.hparams.learning_rate,
+            "architecture": "mobilenetv3",
+            "dataset": "Lego-Minifigures",
+            "batch_size": cfg.experiment.hparams.batch_size,
+            "epochs": cfg.experiment.hparams.num_epochs,
+        },
+    )
     # Data Load
     print("Loading data...")
     num_classes = 38

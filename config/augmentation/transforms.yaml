@@ -1,10 +1,7 @@
 train_transforms:
   resize:
     _target_: torchvision.transforms.Resize
-    size: [256, 256]
-  random_crop:
-    _target_: torchvision.transforms.RandomResizedCrop
-    size: [224, 224]
+    size: [512, 512]
   random_hor_flip:
     _target_: torchvision.transforms.RandomHorizontalFlip
   random_rot:
@@ -16,7 +13,7 @@ train_transforms:
     contrast: 0.3
   random_blur:
     _target_: torchvision.transforms.RandomAdjustSharpness
-    sharpness_factor: 0.5
+    sharpness_factor: 0.8
     p: 0.25
   to_tensor:
     _target_: torchvision.transforms.ToTensor
@@ -28,10 +25,7 @@ train_transforms:
 val_transforms:
   resize:
     _target_: torchvision.transforms.Resize
-    size: [256, 256]
-  crop:
-    _target_: torchvision.transforms.CenterCrop
-    size: [224, 224]
+    size: [512, 512]
   to_tensor:
     _target_: torchvision.transforms.ToTensor
   norma:
@@ -42,10 +36,7 @@ val_transforms:
 test_transforms:
   resize:
     _target_: torchvision.transforms.Resize
-    size: [256, 256]
-  crop:
-    _target_: torchvision.transforms.CenterCrop
-    size: [224, 224]
+    size: [512, 512]
   to_tensor:
     _target_: torchvision.transforms.ToTensor
   norma:
