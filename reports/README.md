@@ -335,7 +335,7 @@ end of the project.
 >
 > Answer:
 
---- Debugging was carried out with the VSCode debugging tool. This allows following where the errors happen and which part of the code actually runs. It's also useful to find problems that dont raise errors or break the processes. By using breakpoints int the right places it is easy to check where the problems occur and how to solve them in an efficient kind of way. We did a single profiling of the training loop to get insights into where the bottlenecks of our code lie. Since the profiling shows that most of the ressources are allocated to the training functionality of the neural network instead of the data loading there is not much potential to increase the efficiency of the training loop. ---
+--- Debugging was carried out with the VSCode debugging tool. This allows following where the errors happen and which part of the code actually runs. It's also useful to find problems that dont raise errors or break the processes. By using breakpoints in the right places it is easy to check where the problems occur and how to solve them in an efficient kind of way. We did a single profiling of the training loop to get insights into where the bottlenecks of our code lie. Since the profiling shows that most of the ressources are allocated to the training functionality of the neural network instead of the data loading there is not much potential to increase the efficiency of the training loop. ---
 
 ## Working in the cloud
 
