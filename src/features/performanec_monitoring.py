@@ -12,7 +12,7 @@ import requests
 from google.cloud import storage
 
 
-def load_cloud_index() -> pd.DataFrame:
+def load_cloud_index(bucket) -> pd.DataFrame:
     index_file_name = "lego_dataset/test_batch.csv"
 
     index_blob = bucket.blob(index_file_name)
@@ -24,7 +24,7 @@ def load_cloud_index() -> pd.DataFrame:
     return df
 
 
-def get_list_of_images_in_bucket(i):
+def get_list_of_images_in_bucket(i, blobs):
     list_of_images = []
     prefix_to_match = f"lego_dataset/test_batch{i}/"
     for blob in blobs:
@@ -88,7 +88,7 @@ def compare_prediction_to_true_class(prediction, true_class):
     return number_prediction == true_class
 
 
-def save_results(results_all, bucket):
+def save_results(results_all, bucket, i):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     df = pd.DataFrame(results_all)
@@ -123,45 +123,52 @@ def save_results(results_all, bucket):
     return None
 
 
-client = storage.Client()
-bucket = client.get_bucket("mlops-project-ss2023-bucket")
-blobs = list(bucket.list_blobs())
+def main():
+    client = storage.Client()
+    bucket = client.get_bucket("mlops-project-ss2023-bucket")
+    blobs = list(bucket.list_blobs())
 
-df_true_classes = load_cloud_index()
+    df_true_classes = load_cloud_index(bucket)
 
-API_URL = "https://inference-mmhol5imca-ey.a.run.app/predict/"
-
-
-# Iterrating over all data batches in a bucket
-i = 0
-results_all = []
-while True:
-
-    results_batch = []
-    list_of_images = get_list_of_images_in_bucket(i)
-
-    if len(list_of_images) == 0:
-        break
-
-    for image_blob_name in list_of_images:
-        print(f"image_blob_name: {image_blob_name}")
-        prediction = get_prediction(API_URL, bucket, image_blob_name)
-        # print(f"prediction: {prediction}")
-
-        # print(f'image_blob_name: {image_blob_name}')
-        true_class = get_true_class(image_blob_name, df_true_classes) - 1
-        # print(f"True class: {true_class}")
-
-        is_true = compare_prediction_to_true_class(prediction, true_class)
-        # print(is_true)
-        results_batch.append(int(is_true))
-
-    i += 1
-    results_all.append(results_batch)
+    API_URL = "https://inference-mmhol5imca-ey.a.run.app/predict/"
 
 
-print("Assessment Done! \n \t Saving results...")
+    # Iterrating over all data batches in a bucket
+    i = 0
+    results_all = []
+    while True:
 
-# Save results in an plot to csv file
+        results_batch = []
+        list_of_images = get_list_of_images_in_bucket(i, blobs)
 
-save_results(results_all, bucket)
+        if len(list_of_images) == 0:
+            break
+
+        for image_blob_name in list_of_images:
+            print(f"image_blob_name: {image_blob_name}")
+            prediction = get_prediction(API_URL, bucket, image_blob_name)
+            # print(f"prediction: {prediction}")
+
+            # print(f'image_blob_name: {image_blob_name}')
+            true_class = get_true_class(image_blob_name, df_true_classes) - 1
+            # print(f"True class: {true_class}")
+
+            is_true = compare_prediction_to_true_class(prediction, true_class)
+            # print(is_true)
+            results_batch.append(int(is_true))
+
+        i += 1
+        results_all.append(results_batch)
+
+
+    print("Assessment Done! \n \t Saving results...")
+
+    # Save results in an plot to csv file
+
+    save_results(results_all, bucket, i)
+
+    print("Results Saved!")
+
+    return None
+
+main()
