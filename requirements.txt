@@ -23,3 +23,6 @@ python-multipart
 pre-commit
 google-cloud-storage
 matplotlib
+types-google-cloud-ndb
+pandas-stubs
+types-Pillow
