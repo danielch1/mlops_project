@@ -116,7 +116,7 @@ end of the project.
 >
 > Answer:
 
---- 12693911 Daniel C., 12694510 Lennart M. ---
+--- 12693911 Daniel Ch., 12694510 Lennart M. ---
 
 ### Question 3
 > **What framework did you choose to work with and did it help you complete the project?**
@@ -512,7 +512,7 @@ Last but not least, Model Performance Monitoring takes center stage each time a 
 > Answer:
 
 ---
-Student 12693911 Daniel C.
+Student 12693911 Daniel Ch.
 Set up the github repository. Set up project structure using CookieCutter. Created the Issues and the Kanban Board. Created the Hydra integration for hyperparameters being managed by a config file. Integrated pre-commit hooks. Tried to set up DVC (twice). Set up the Google Cloud Project and google account for being able to work cooperatively on the project. Set up Google Storage. Set up automated docker image build based on a GitHub repository push. Moved model training to a cloud VM that saves the trained model to a project bucked. Set up System Monitoring of the deplyed model. Set up Model Performance Monitoring by using symulated batches of data and Cloud Functions. Set up automatical authentication using .env files and secrets to get WandB working on all platforms. Run an experimient to optimize Data Loading using Distributed Data Loading. Set up Github actions for code formatting check and running tests.
 
 Student 12694510 Lennart M.
