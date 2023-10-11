@@ -425,7 +425,7 @@ end of the project.
 >
 > Answer:
 
---- question 23 fill here ---
+---  ---
 
 ### Question 24
 
@@ -491,7 +491,7 @@ end of the project.
 >
 > Answer:
 
---- 12694510(LM) 12693911(DC)
+---
 Student 12693911 Daniel C.
 Set up the github repository. Created the Issues and the Kanban Board. Created the Hydra integration for hyperparameters being managed in a config file. Integrated pre-commit hooks. Set up the google cloud project and google account for being able to work cooperatively on the project. Moved the model training to the cloud by creating a cloud VM. Implemented automatic Dockerimage creation in the cloud.
 
