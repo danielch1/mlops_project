@@ -76,7 +76,7 @@ end of the project.
 * [ ] Write unit tests related to model construction and or model training
 * [x] Calculate the coverage.
 * [x] Get some continuous integration running on the github repository
-* [ ] Create a data storage in GCP Bucket for you data and preferable link this with your data version control setup
+* [x] Create a data storage in GCP Bucket for you data and preferable link this with your data version control setup
 * [x] Create a trigger workflow for automatically building your docker images
 * [x] Get your model training in GCP using either the Engine or Vertex AI
 * [x] Create a FastAPI application that can do inference using your model
@@ -86,16 +86,16 @@ end of the project.
 ### Week 3
 
 * [x] Check how robust your model is towards data drifting
-* [ ] Setup monitoring for the system telemetry of your deployed model
-* [ ] Setup monitoring for the performance of your deployed model
+* [x] Setup monitoring for the system telemetry of your deployed model
+* [x] Setup monitoring for the performance of your deployed model
 * [x] If applicable, play around with distributed data loading
-* [ ] If applicable, play around with distributed model training
+* [x] If applicable, play around with distributed model training
 * [ ] Play around with quantization, compilation and pruning for you trained models to increase inference speed
 
 ### Additional
 
-* [ ] Revisit your initial project description. Did the project turn out as you wanted?
-* [ ] Make sure all group members have a understanding about all parts of the project
+* [x] Revisit your initial project description. Did the project turn out as you wanted?
+* [x] Make sure all group members have a understanding about all parts of the project
 * [x] Uploaded all your code to github
 
 ## Group information
@@ -116,7 +116,7 @@ end of the project.
 >
 > Answer:
 
---- question 2 fill here ---
+--- 12693911 Daniel C., 12694510 Lennart M. ---
 
 ### Question 3
 > **What framework did you choose to work with and did it help you complete the project?**
@@ -129,7 +129,7 @@ end of the project.
 >
 > Answer:
 
---- The framework Timm using a pretrained model for image Classification ---
+--- We utilized the Timm Framework in conjunction with a pretrained mobilenetv3 neural net architecture for our image classification task. Timm, which stands for 'pyTorch Image Models,' is a powerful framework that aligns seamlessly with PyTorch, making it an excellent choice for deep learning and computer vision projects. By using a pre-trained network from Timm, we were able to leverage the knowledge and features learned from vast image datasets, which significantly accelerated our project's development. The combination of Timm's user-friendly API and the knowledge encapsulated in the pre-trained network allowed us to focus more on the specific aspects of our project, such as data preparation and fine-tuning, resulting in a successful image classification solution. ---
 
 ## Coding environment
 
@@ -208,7 +208,7 @@ end of the project.
 >
 > Answer:
 
---- ########################TODO#########################  ---
+--- According to the coverage report we achieved 90% code coverage (see figure)  [Coverage Report](figures/coverage.png) But this does not guarantee that the project is error-free. Code coverage primarily measures which portions of the code have been executed during testing, not the correctness of the code or the quality of the data used for training. Machine learning models depend on both code and data, and errors in the data can propagate through the entire pipeline, regardless of how well the code is covered by the tests. Further, machine learning models are highly data-dependent and may not generalize well to all real-world scenarios. They are subject to overfitting, bias, and unexpected behaviors that can't be completely addressed through code coverage and traditional testing. Because of that, while high code coverage is essential for identifying and mitigating certain issues concerning the code base, it should be complemented with thorough data validation, domain expertise, and ongoing monitoring to increase trust and reliability in a machine learning project.  ---
 
 ### Question 9
 
@@ -254,7 +254,7 @@ end of the project.
 >
 > Answer:
 
---- question 11 fill here ---
+--- our continiuous integration setup consists of two different github action workflows. Both run everytime a pull request to main is done. The first workflow (linked below) that executes the local unit tests (explained above). The second Workflow checks the code which is to be merged to main for code formatting errors to be compliant with general code formatting rules and provide readability for other developers. The [link to github workflow](https://github.com/danielch1/mlops_project/blob/be07608cdba55652616fda39c7105dc524e23498/.github/workflows/tests.yml) ---
 
 ## Running code and tracking experiments
 
@@ -273,7 +273,7 @@ end of the project.
 >
 > Answer:
 
---- question 12 fill here ---
+--- We used configuration files for setting hyperparameters for the model training. Additionally we used configurations files that set up the torchvision transformations for the data preperation. To bind both .yaml files together there is a main.yaml file which calls the other yaml files. We use Hydra to read the config files and set the hyperparameters and transformations according to the necessary task. Hydra then creates an output file with the used config after the training is completed. The used hyperparameters are also saved to every run on wandb. The different configurations can be run within a loop but we opted to not do that to conserve ressources---
 
 ### Question 13
 
@@ -288,7 +288,7 @@ end of the project.
 >
 > Answer:
 
---- question 13 fill here ---
+--- Since the hyperparameters get saved to the wandb project including the resulting training and validation accuracy, to reproduce an experiment one has to go to wandb and look at the saved runs and the included information. It is also possible to look at the output files created by Hydra and use the configuration for the experiment that needs to be reproduced.---
 
 ### Question 14
 
@@ -305,7 +305,7 @@ end of the project.
 >
 > Answer:
 
---- question 14 fill here ---
+--- As can be seen in the first figure we are tracking the arguably 4 most important metrics for image classification. Training Loss, Training Accuracy, Validation Loss and Validation Accuracy. These are tracked for every finished training run either in the cloud or locally. As seen in the second figure we also track hyperparameters for each run to increase reproducability for every experiment run. [wandb graphs](figures/wandb.png) [wandb runs table](figures/wandb_runs_table.png)---
 
 ### Question 15
 
