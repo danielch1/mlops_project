@@ -132,7 +132,6 @@ def main():
 
     API_URL = "https://inference-mmhol5imca-ey.a.run.app/predict/"
 
-
     # Iterrating over all data batches in a bucket
     i = 0
     results_all = []
@@ -160,7 +159,6 @@ def main():
         i += 1
         results_all.append(results_batch)
 
-
     print("Assessment Done! \n \t Saving results...")
 
     # Save results in an plot to csv file
@@ -170,5 +168,6 @@ def main():
     print("Results Saved!")
 
     return None
+
 
 main()
