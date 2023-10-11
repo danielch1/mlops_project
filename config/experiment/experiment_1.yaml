@@ -1,10 +1,10 @@
 #config.yaml
 hparams:
-  batch_size: 4
+  batch_size: 8
   take_pretrained_model: True
   shuffle: True
-  learning_rate: 0.0001
-  num_epochs: 15
+  learning_rate: 0.0005
+  num_epochs: 20
 
 save_to_bucket: True
 bucket_name: "mlops-project-ss2023-bucket"

@@ -439,7 +439,7 @@ end of the project.
 >
 > Answer:
 
---- question 24 fill here ---
+--- We created a new google account to use the cloud features, which we then shared to make cooperating easier. So we only have information on the joint credits used on google cloud. We used 14€ Credits in total. The Allocation can be seen in the figure [this figure](figures/overview.png) ---
 
 ## Overall discussion of project
 
@@ -474,7 +474,7 @@ end of the project.
 >
 > Answer:
 
---- question 26 fill here ---
+--- The biggest challenge of the wasn't just one tool but making all tools work together. Especially when adding new features and new tools one would have to check if everything else still works. This lead us to improving the structure of the source code multiple times because another tool would require different requirements. That being said, working with the cloud also provided a demanding challenge because testing and deploying takes much longer than these same actions take on a local machine. ---
 
 ### Question 27
 
@@ -491,4 +491,10 @@ end of the project.
 >
 > Answer:
 
---- question 27 fill here ---
+--- 12694510(LM) 12693911(DC)
+Student 12693911 Daniel C.
+Set up the github repository. Created the Issues and the Kanban Board. Created the Hydra integration for hyperparameters being managed in a config file. Integrated pre-commit hooks. Set up the google cloud project and google account for being able to work cooperatively on the project. Moved the model training to the cloud by creating a cloud VM. Implemented automatic Dockerimage creation in the cloud.
+
+Student 12694510 Lennart M.
+Created the source code for data preprocessing and dataset creation from the raw images. Creating Config and Hydra integration for image transformation via .yaml files. Setting up the CI on github actions and writing unit tests. Writing the Inference/prediction functionality and deploying it locally as well as in the cloud. Additionally created the Datadrift detection functionality deployed in the cloud. Implemented Profiling into the training loop.
+ ---

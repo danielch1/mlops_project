@@ -10,14 +10,14 @@ train_transforms:
   random_rot:
     _target_: torchvision.transforms.RandomRotation
     degrees: 30
-  random_affine:
-    _target_: torchvision.transforms.RandomAffine
-    degrees: 0
-    translate: [0.1, 0.1]
-  random_persp:
-    _target_: torchvision.transforms.RandomPerspective
-    distortion_scale: 0.5
-    p: 0.5
+  random_jit:
+    _target_: torchvision.transforms.ColorJitter
+    brightness: 0.4
+    contrast: 0.3
+  random_blur:
+    _target_: torchvision.transforms.RandomAdjustSharpness
+    sharpness_factor: 0.5
+    p: 0.25
   to_tensor:
     _target_: torchvision.transforms.ToTensor
   norma:

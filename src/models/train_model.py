@@ -31,10 +31,10 @@ wandb.init(
     entity="the_positive_thinkers",
     # track hyperparameters and run metadata
     config={
-        "learning_rate": 0.003,
+        "learning_rate": 0.0001,
         "architecture": "mobilenetv3",
         "dataset": "Lego-Minifigures",
-        "epochs": 10,
+        "epochs": 15,
     },
 )
 
@@ -57,9 +57,14 @@ def train_model(cfg):
 
     print("Defining model...")
     # Model definition
-    model = timm.create_model(
-        "mobilenetv3_large_100", pretrained=True, num_classes=num_classes
+    model = nn.Sequential(
+        timm.create_model("mobilenetv3_large_100", pretrained=True, num_classes=1280),
+        nn.Dropout(p=0.5),  # Add dropout before the last layer
+        nn.Linear(
+            in_features=1280, out_features=num_classes, bias=True
+        ),  # Add your own output layer
     )
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     optimizer = optim.Adam(model.parameters(), lr=cfg.experiment.hparams.learning_rate)
     criterion = nn.CrossEntropyLoss()
 
@@ -67,6 +72,7 @@ def train_model(cfg):
     patience = 2  # Number of epochs to wait for improvement
     epochs_without_improvement = 0
 
+    model.to(device)
     print("Training start...")
     # Training loop
     for ep in range(cfg.experiment.hparams.num_epochs):
@@ -75,8 +81,12 @@ def train_model(cfg):
 
         for batch_idx, (inputs, labels) in enumerate(train_loader):
             model.train()
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+
             optimizer.zero_grad()
             y_hat = model(inputs)
+
             batch_loss = criterion(y_hat, labels)
             batch_loss.backward()
             optimizer.step()
@@ -105,6 +115,8 @@ def train_model(cfg):
 
         with torch.no_grad():
             for batch_idx, (val_inputs, val_labels) in enumerate(val_loader):
+                val_inputs = val_inputs.to(device)
+                val_labels = val_labels.to(device)
                 val_outputs = model(val_inputs)
                 val_loss = criterion(val_outputs, val_labels)
 
@@ -176,7 +188,7 @@ def main(cfg):
         save_to_bucket(
             save_path,
             cfg.experiment.bucket_name,
-            bucket_save_path="mobilenetv3_fine_tuned.pth",
+            bucket_save_path="mobilenetv3_fine_tuned_exp2.pth",
         )
 
 

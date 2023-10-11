@@ -39,7 +39,7 @@ def train_val_split(
     # takes the path and label information from the provided index.csv file
     index = pd.read_csv(input_path_index)
     # Train Validation Split taking 3/4 of the training set as validation
-    train_index = index.sample(int(0.75 * len(index.index)), random_state=42)
+    train_index = index.sample(int(0.8 * len(index.index)), random_state=42)
 
     remaining_indices = list(set(index.index) - set(train_index.index))
     # Create a new DataFrame with the remaining indices
