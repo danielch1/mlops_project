@@ -471,7 +471,7 @@ Monitoring functions setup can be seen here: [Cloud Functions](figures/cloud_fun
 >
 > Answer:
 
---- Project scheme: [this figure](figures/overview_our.png). 
+--- ![Project scheme](figures/overview_our.png). 
 The diagram begins with our local development environment where we manage our repository. Within this setup, we've harnessed the power of the Timm framework, built on the robust Torch package, to create our model. Our repository, organized using GitHub, ensures smooth collaboration. We've added automated checks for formatting and running tests every time we merge a feature branch into the main branch. Additionally, we've implemented a pre-commit hook to enforce code formatting and PEP 8 compliance.
 
 Whenever a new version of our repository (main branch) becomes available, it triggers an automatic build of Docker Images on the Google Cloud Platform. These Docker Images contain the training script and are executed within a Virtual Machine on Google Compute Engine. The resulting model is stored in a Google Storage Bucket, while training logs and configurations are safely kept on the WandB platform. Notably, we have the flexibility to run model training, including WandB logging, on a local computer, and it can also save models to the same Cloud Bucket.
@@ -494,7 +494,7 @@ Last but not least, Model Performance Monitoring takes center stage each time a 
 >
 > Answer:
 
---- The biggest challenge of the wasn't just one tool but making all tools work together. Especially when adding new features and new tools one would have to check if everything else still works. This lead us to improving the structure of the source code multiple times because another tool would require different requirements. That being said, working with the cloud also provided a demanding challenge because testing and deploying takes much longer than these same actions take on a local machine. ---
+--- The biggest challenge of the project wasn't just one tool but making all tools work together. Especially when adding new features and new tools one would have to check if everything else still works. This lead us to improving the structure of the source code multiple times because another tool would require different requirements. That being said, working with the cloud also provided a demanding challenge because testing and deploying takes much longer than these same actions take on a local machine. ---
 
 ### Question 27
 
