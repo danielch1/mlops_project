@@ -89,7 +89,7 @@ end of the project.
 * [x] Setup monitoring for the system telemetry of your deployed model
 * [x] Setup monitoring for the performance of your deployed model
 * [x] If applicable, play around with distributed data loading
-* [x] If applicable, play around with distributed model training
+* [ ] If applicable, play around with distributed model training
 * [ ] Play around with quantization, compilation and pruning for you trained models to increase inference speed
 
 ### Additional
@@ -116,7 +116,7 @@ end of the project.
 >
 > Answer:
 
---- 12693911 Daniel C., 12694510 Lennart M. ---
+--- 12693911 Daniel Ch., 12694510 Lennart M. ---
 
 ### Question 3
 > **What framework did you choose to work with and did it help you complete the project?**
@@ -174,7 +174,7 @@ end of the project.
 >
 > Answer:
 
---- We added pre-commit hooks with black, isort and flake 8. Additionally, automatic tests run via github actions to check codeformatting using black and isort. Good Code Formatting is especially important in larger projects because a lot of people with different coding styles work on the same code base. To reduce the friction as much as possible and provide good code understandability especially for developers that didn't write the code themselves having a uniform way of code formatting is beneficial---
+--- We added pre-commit hooks with black, isort and flake8. Additionally, automatic tests run via github actions to check codeformatting flake8. Good Code Formatting is especially important in larger projects because a lot of people with different coding styles work on the same code base. To reduce the friction as much as possible and provide good code understandability especially for developers that didn't write the code themselves having a uniform way of code formatting is beneficial---
 
 ## Version control
 
@@ -193,7 +193,7 @@ end of the project.
 >
 > Answer:
 
---- we implemented a total of 4 tests in the project, where 3 check that the raw input data has the correct shape to work with the preprocessing pipeline to be later fed into the Neural Network for training. The fourth test is supposed to check if the model state dict was saved correctly can be loaded and leads to the correct output shape to assure that its possible to make predictions with the trained model. ---
+--- We implemented a total of 4 tests in the project, where 3 check that the raw input data has the correct shape to work with the preprocessing pipeline to be later fed into the Neural Network for training. The fourth test is supposed to check if the model state dict was saved correctly can be loaded and leads to the correct output shape to assure that its possible to make predictions with the trained model. We are aware that it would be beneficial to add more tests but ran out of time to do so. ---
 
 ### Question 8
 
@@ -223,7 +223,7 @@ end of the project.
 >
 > Answer:
 
---- To beginn we converted each object of the project checklist provided by the dtu course into an issue. From this we created a GitHub Project Kanban Board to have an overview which tasks need to be done next. Within the Project our process was now to create a new branch when working on an issue. The branch was linked to the issue that was being worked on, which in term moved the issue form ToDo to in Progress. When the Feature was ready to be merged with the main branch, we created a pull request, that started the testing workflows on github. When all tests passed we then completed the pull request to merge into the main branch. Afterwards the issue could be closed and moved to done on the Kanban board automatically. ![Kanban Board](figures/Kanban_board.png) ---
+--- To beginn we converted each object of the project checklist provided by the dtu course into an issue. From this we created a GitHub Project Kanban Board to have an overview which tasks need to be done next. Within the Project our process was now to create a new branch when working on an issue. The branch was linked to the issue that was being worked on, which in term moved the issue form ToDo to in Progress. When the Feature was ready to be merged with the main branch, we created a pull request, that started the testing workflows on github. When all tests passed we then completed the pull request to merge into the main branch. Afterwards the issue could be closed and moved to done on the Kanban board automatically. [Kanban Board](figures/Kanban_board.png) ---
 
 ### Question 10
 
@@ -238,7 +238,7 @@ end of the project.
 >
 > Answer:
 
---- We did not use DVC in our Project because we had some Problems making the google Drive integration work with our Project data. Since our Dataset was rather small we opted for just using github for the version control which is not idead, but brings similar functionality. Data Version Control is especially useful in research where reproducability is often hard. This can be greatly improved by using data version control. Particularly when working with large amounts of data doing version control on git is infeasable. DVC stores metadata about the data and models in Git, while the actual data files remain separate to avoid bloating the Git repository. ---
+--- We did not use DVC in our project because we had some Problems making the google Drive integration work with our Project data. Since our dataset was rather small (about 30 MB) we opted for just using github for the version control which is not idead, but brings similar functionality. Data Version Control is especially useful in research where reproducability is often hard. This can be greatly improved by using data version control. Particularly when working with large amounts of data doing version control on git is infeasable. DVC stores metadata about the data and models in Git, while the actual data files remain separate to avoid bloating the Git repository. ---
 
 ### Question 11
 
@@ -254,7 +254,7 @@ end of the project.
 >
 > Answer:
 
---- our continiuous integration setup consists of two different github action workflows. Both run everytime a pull request to main is done. The first workflow (linked below) that executes the local unit tests (explained above). The second Workflow checks the code which is to be merged to main for code formatting errors to be compliant with general code formatting rules and provide readability for other developers. The [link to github workflow](https://github.com/danielch1/mlops_project/blob/be07608cdba55652616fda39c7105dc524e23498/.github/workflows/tests.yml) ---
+--- Our continiuous integration setup consists of two different github action workflows. Both run everytime a pull request to main is done. The first workflow (linked below) that executes the local unit tests (explained above). The second workflow checks the code which is to be merged to main for code formatting errors to be compliant with general code formatting rules and provide readability for other developers. The tests run on ubuntu and windows. The workflows also included tests on MacOS which we decided to leave out because the syntax is quite similar. The [link to github workflow](https://github.com/danielch1/mlops_project/blob/be07608cdba55652616fda39c7105dc524e23498/.github/workflows/tests.yml) ---
 
 ## Running code and tracking experiments
 
@@ -288,7 +288,7 @@ end of the project.
 >
 > Answer:
 
---- Since the hyperparameters get saved to the wandb project including the resulting training and validation accuracy, to reproduce an experiment one has to go to wandb and look at the saved runs and the included information. It is also possible to look at the output files created by Hydra and use the configuration for the experiment that needs to be reproduced.---
+--- Since the hyperparameters get saved to the wandb project including the resulting training and validation accuracy, to reproduce an experiment one has to go to wandb and look at the saved runs and the included information. It is also possible to look at the output files created by Hydra and use the configuration for the experiment that needs to be reproduced. ---
 
 ### Question 14
 
@@ -335,7 +335,7 @@ end of the project.
 >
 > Answer:
 
---- Debuggin was carried out with the VSCode debugging tool. This allows following where the errors happen and which part of the code actually runs. It's also useful to find problems that dont raise errors or break the processes. By using breakpoints int the right places it is easy to check where the problems occur and how to solve them in an efficient kind of way. We did a single profiling of the training loop to get insights into where the bottlenecks of our code lie. Since the profiling shows that most of the ressources are allocated to the training functionality of the neural network instead of the data loading there is not much potential to increase the efficiency of the training loop. ---
+--- Debugging was carried out with the VSCode debugging tool. This allows following where the errors happen and which part of the code actually runs. It's also useful to find problems that dont raise errors or break the processes. By using breakpoints int the right places it is easy to check where the problems occur and how to solve them in an efficient kind of way. We did a single profiling of the training loop to get insights into where the bottlenecks of our code lie. Since the profiling shows that most of the ressources are allocated to the training functionality of the neural network instead of the data loading there is not much potential to increase the efficiency of the training loop. ---
 
 ## Working in the cloud
 
@@ -450,7 +450,7 @@ Monitoring functions setup can be seen here: [Cloud Functions](figures/cloud_fun
 >
 > Answer:
 
---- We created a new google account to use the cloud features, which we then shared to make cooperating easier. So we only have information on the joint credits used on google cloud. We used 14€ Credits in total. The Allocation can be seen in the figure [this figure](figures/overview.png) ---
+--- We created a new google account to use the cloud features, which we then shared to make cooperating easier. So we only have information on the joint credits used on google cloud. We used 14€ Credits in total. The Allocation can be seen in the figure [this figure](figures/billing.png) ---
 
 ## Overall discussion of project
 
@@ -512,9 +512,9 @@ Last but not least, Model Performance Monitoring takes center stage each time a 
 > Answer:
 
 ---
-Student 12693911 Daniel C.
+Student 12693911 Daniel Ch.
 Set up the github repository. Set up project structure using CookieCutter. Created the Issues and the Kanban Board. Created the Hydra integration for hyperparameters being managed by a config file. Integrated pre-commit hooks. Tried to set up DVC (twice). Set up the Google Cloud Project and google account for being able to work cooperatively on the project. Set up Google Storage. Set up automated docker image build based on a GitHub repository push. Moved model training to a cloud VM that saves the trained model to a project bucked. Set up System Monitoring of the deplyed model. Set up Model Performance Monitoring by using symulated batches of data and Cloud Functions. Set up automatical authentication using .env files and secrets to get WandB working on all platforms. Run an experimient to optimize Data Loading using Distributed Data Loading. Set up Github actions for code formatting check and running tests.
 
 Student 12694510 Lennart M.
-Created the source code for data preprocessing and dataset creation from the raw images. Creating Config and Hydra integration for image transformation via .yaml files. Setting up the CI on github actions and writing unit tests. Writing the Inference/prediction functionality and deploying it locally as well as in the cloud. Additionally created the Datadrift detection functionality deployed in the cloud. Implemented Profiling into the training loop.
+He was responsible for generating the source code that handled data preprocessing and the formation of datasets using raw images. He also integrated Config and Hydra to facilitate image transformations through .yaml files. In addition, he configured continuous integration on GitHub Actions and crafted unit tests. He also wrote the functionality for inference and prediction, deploying it both locally and in the cloud. Furthermore, he developed Datadrift detection features for cloud deployment and incorporated profiling into the training loop.
  ---
