@@ -12,7 +12,7 @@ import requests
 from google.cloud import storage
 
 
-def load_cloud_index() -> pd.DataFrame:
+def load_cloud_index(bucket) -> pd.DataFrame:
     index_file_name = "lego_dataset/test_batch.csv"
 
     index_blob = bucket.blob(index_file_name)
@@ -24,7 +24,7 @@ def load_cloud_index() -> pd.DataFrame:
     return df
 
 
-def get_list_of_images_in_bucket(i):
+def get_list_of_images_in_bucket(i, blobs):
     list_of_images = []
     prefix_to_match = f"lego_dataset/test_batch{i}/"
     for blob in blobs:
@@ -88,11 +88,14 @@ def compare_prediction_to_true_class(prediction, true_class):
     return number_prediction == true_class
 
 
-def save_results(results_all, save_path):
+def save_results(results_all, bucket, i):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     df = pd.DataFrame(results_all)
-    df.to_csv(os.path.join(save_path, f"results_{timestamp}.csv"), index=False)
+    csv_path = f"results_{timestamp}.csv"
+    df.to_csv(csv_path, index=False)
+    blob_csv = bucket.blob(f"performance_logs/results_{timestamp}.csv")
+    blob_csv.upload_from_filename(csv_path)
 
     # Calculate the averages for each inner list
     averages = [np.mean(inner_list) for inner_list in results_all]
@@ -105,50 +108,66 @@ def save_results(results_all, save_path):
     plt.ylabel("Prediction Accuracy")
     plt.title("Accuracy for batch of data")
 
-    # Save the plot with a timestamp in the filename
-
-    plot_filename = os.path.join(save_path, f"accuracy_plot_{timestamp}.png")
+    # Save the plot with a timestamp in the filename locally
+    plot_filename = f"accuracy_plot_{timestamp}.png"
     plt.savefig(plot_filename)
 
+    # Send file to a bucket
+    blob_plot = bucket.blob(f"performance_logs/accuracy_plot_{timestamp}.png")
+    blob_plot.upload_from_filename(plot_filename)
 
-client = storage.Client()
-bucket = client.get_bucket("mlops-project-ss2023-bucket")
-blobs = list(bucket.list_blobs())
+    # Clean temp files
+    os.remove(plot_filename)
+    os.remove(csv_path)
 
-df_true_classes = load_cloud_index()
-
-API_URL = "https://inference-mmhol5imca-ey.a.run.app/predict/"
+    return None
 
 
-# Iterrating over all data batches in a bucket
-i = 0
-results_all = []
-while True:
+def main():
+    client = storage.Client()
+    bucket = client.get_bucket("mlops-project-ss2023-bucket")
+    blobs = list(bucket.list_blobs())
 
-    results_batch = []
-    list_of_images = get_list_of_images_in_bucket(i)
+    df_true_classes = load_cloud_index(bucket)
 
-    if len(list_of_images) == 0:
-        break
+    API_URL = "https://inference-mmhol5imca-ey.a.run.app/predict/"
 
-    for image_blob_name in list_of_images:
-        print(f"image_blob_name: {image_blob_name}")
-        prediction = get_prediction(API_URL, bucket, image_blob_name)
-        # print(f"prediction: {prediction}")
+    # Iterrating over all data batches in a bucket
+    i = 0
+    results_all = []
+    while True:
 
-        # print(f'image_blob_name: {image_blob_name}')
-        true_class = get_true_class(image_blob_name, df_true_classes) - 1
-        # print(f"True class: {true_class}")
+        results_batch = []
+        list_of_images = get_list_of_images_in_bucket(i, blobs)
 
-        is_true = compare_prediction_to_true_class(prediction, true_class)
-        # print(is_true)
-        results_batch.append(int(is_true))
+        if len(list_of_images) == 0:
+            break
 
-    i += 1
-    results_all.append(results_batch)
+        for image_blob_name in list_of_images:
+            print(f"image_blob_name: {image_blob_name}")
+            prediction = get_prediction(API_URL, bucket, image_blob_name)
+            # print(f"prediction: {prediction}")
 
-print("Assessment Done! \n \t Saving results...")
+            # print(f'image_blob_name: {image_blob_name}')
+            true_class = get_true_class(image_blob_name, df_true_classes) - 1
+            # print(f"True class: {true_class}")
 
-# Save results in an plot to csv file
+            is_true = compare_prediction_to_true_class(prediction, true_class)
+            # print(is_true)
+            results_batch.append(int(is_true))
 
-save_results(results_all, "./")
+        i += 1
+        results_all.append(results_batch)
+
+    print("Assessment Done! \n \t Saving results...")
+
+    # Save results in an plot to csv file
+
+    save_results(results_all, bucket, i)
+
+    print("Results Saved!")
+
+    return None
+
+
+main()
