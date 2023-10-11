@@ -410,7 +410,7 @@ end of the project.
 >
 > Answer:
 
---- For deployment we wrapped our model into application using the FastAPI Framework and Uvicorn. This worked out locally as well as in the cloud. The Deployment provides inference to the user. He supplies the model with an image, which than will respond with a prediction to what lego minifigure it could be. Since the model has to be supplied with an image it is best to use the python built in request package to load the image and provide it to the api. Both Applications save the image that is used for prediction into a cloud storage bucket, to check for data drifting. ---
+--- For deployment we wrapped our model into application using the FastAPI Framework and Uvicorn. This worked out locally as well as in the cloud. The Deployment provides inference to the user. He supplies the model with an image, which than will respond with a prediction to what lego minifigure it could be. Since the model has to be supplied with an image it is best to use the python built in request package to load the image and provide it to the api. Both Applications save the image that is used for prediction into a cloud storage bucket, to check for data drifting. We uploaded a script which in the repo is located under src/models and is called client_predict.py. It randomly selects one image out of the tests set and sends it to the cloud api for a prediction. And returns the result it got from the request in form of the prediction and the image that it sent. ---
 
 ### Question 23
 
