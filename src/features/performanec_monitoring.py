@@ -88,11 +88,14 @@ def compare_prediction_to_true_class(prediction, true_class):
     return number_prediction == true_class
 
 
-def save_results(results_all, save_path):
+def save_results(results_all, bucket):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     df = pd.DataFrame(results_all)
-    df.to_csv(os.path.join(save_path, f"results_{timestamp}.csv"), index=False)
+    csv_path = f"results_{timestamp}.csv"
+    df.to_csv(csv_path, index=False)
+    blob_csv = bucket.blob(f"performance_logs/results_{timestamp}.csv")
+    blob_csv.upload_from_filename(csv_path)
 
     # Calculate the averages for each inner list
     averages = [np.mean(inner_list) for inner_list in results_all]
@@ -105,10 +108,19 @@ def save_results(results_all, save_path):
     plt.ylabel("Prediction Accuracy")
     plt.title("Accuracy for batch of data")
 
-    # Save the plot with a timestamp in the filename
-
-    plot_filename = os.path.join(save_path, f"accuracy_plot_{timestamp}.png")
+    # Save the plot with a timestamp in the filename locally
+    plot_filename = f"accuracy_plot_{timestamp}.png"
     plt.savefig(plot_filename)
+
+    # Send file to a bucket
+    blob_plot = bucket.blob(f"performance_logs/accuracy_plot_{timestamp}.png")
+    blob_plot.upload_from_filename(plot_filename)
+
+    # Clean temp files
+    os.remove(plot_filename)
+    os.remove(csv_path)
+
+    return None
 
 
 client = storage.Client()
@@ -147,8 +159,9 @@ while True:
     i += 1
     results_all.append(results_batch)
 
+
 print("Assessment Done! \n \t Saving results...")
 
 # Save results in an plot to csv file
 
-save_results(results_all, "./")
+save_results(results_all, bucket)
