@@ -425,7 +425,18 @@ end of the project.
 >
 > Answer:
 
----  ---
+--- 
+
+We've implemented a comprehensive three-fold monitoring system to ensure the reliability and effectiveness of our model:
+
+1. System Monitoring: Our predictions app, the deployed model, undergoes continuous system monitoring. When this service experiences heavy usage, characterized by an average response waiting time exceeding 1 second or receiving more than 60 requests per minute, our project admin is promptly notified via email. This alert mechanism empowers us to proactively allocate additional computing resources to the service as needed.
+
+2. Data Drift Monitoring: Every image sent to our inference app is meticulously logged and stored. We perform a daily data drift check, which evaluates specific image features such as brightness and contrast. The results of this check are compiled into a comprehensive report and securely saved in our project's data bucket. Should a significant data drift be detected, this insightful data empowers us to consider triggering a model retraining process, maintaining the model's accuracy and relevancy.
+
+3. Model Performance Monitoring: As new batches of labeled data arrive, we've devised a streamlined process. We've divided our validation subset into three manageable batches. A Cloud Function is triggered each time a batch is uploaded to our project bucket. This function conducts inference on the data and rigorously assesses prediction accuracy. The outcomes of this assessment are meticulously documented in the form of a detailed report, stored within the project's storage bucket. If a significant drop in model performance is identified, this proactive approach enables us to promptly initiate the model retraining process, guaranteeing that our model remains accurate and effective. Performance check figure can be seen here: [Accuracy Plot](figures/accuracy_plot_2023-10-11_00-19-42.png).
+
+Monitoring functions setup can be seen here: [Cloud Functions](figures/cloud_functions.png)
+ ---
 
 ### Question 24
 
@@ -460,7 +471,16 @@ end of the project.
 >
 > Answer:
 
---- question 25 fill here ---
+--- Project scheme: [this figure](figures/overview_our.png). 
+The diagram begins with our local development environment where we manage our repository. Within this setup, we've harnessed the power of the Timm framework, built on the robust Torch package, to create our model. Our repository, organized using GitHub, ensures smooth collaboration. We've added automated checks for formatting and running tests every time we merge a feature branch into the main branch. Additionally, we've implemented a pre-commit hook to enforce code formatting and PEP 8 compliance.
+
+Whenever a new version of our repository (main branch) becomes available, it triggers an automatic build of Docker Images on the Google Cloud Platform. These Docker Images contain the training script and are executed within a Virtual Machine on Google Compute Engine. The resulting model is stored in a Google Storage Bucket, while training logs and configurations are safely kept on the WandB platform. Notably, we have the flexibility to run model training, including WandB logging, on a local computer, and it can also save models to the same Cloud Bucket.
+
+Another Dockerfile runs on Cloud Run, housing a prediction application that leverages the latest model version. Users can conveniently access the prediction app via our Python client script. Upon uploading an image, the app swiftly returns model predictions.
+
+In the realm of system and model monitoring, we've implemented proactive measures. An alert system triggers notifications if the deployed system experiences heavy usage, indicated by a response time exceeding 1 second or an influx of more than 60 requests per minute. Furthermore, all images submitted to the app are stored, and daily data drift checks are performed, comparing the incoming data to what the model was originally trained on.
+
+Last but not least, Model Performance Monitoring takes center stage each time a new batch of labeled data arrives. The results of both Performance Monitoring and Data Drift checks are documented in the form of reports, securely stored in a dedicated Storage Bucket. ---
 
 ### Question 26
 
@@ -493,7 +513,7 @@ end of the project.
 
 ---
 Student 12693911 Daniel C.
-Set up the github repository. Created the Issues and the Kanban Board. Created the Hydra integration for hyperparameters being managed in a config file. Integrated pre-commit hooks. Set up the google cloud project and google account for being able to work cooperatively on the project. Moved the model training to the cloud by creating a cloud VM. Implemented automatic Dockerimage creation in the cloud.
+Set up the github repository. Set up project structure using CookieCutter. Created the Issues and the Kanban Board. Created the Hydra integration for hyperparameters being managed by a config file. Integrated pre-commit hooks. Tried to set up DVC (twice). Set up the Google Cloud Project and google account for being able to work cooperatively on the project. Set up Google Storage. Set up automated docker image build based on a GitHub repository push. Moved model training to a cloud VM that saves the trained model to a project bucked. Set up System Monitoring of the deplyed model. Set up Model Performance Monitoring by using symulated batches of data and Cloud Functions. Set up automatical authentication using .env files and secrets to get WandB working on all platforms. Run an experimient to optimize Data Loading using Distributed Data Loading. Set up Github actions for code formatting check and running tests.
 
 Student 12694510 Lennart M.
 Created the source code for data preprocessing and dataset creation from the raw images. Creating Config and Hydra integration for image transformation via .yaml files. Setting up the CI on github actions and writing unit tests. Writing the Inference/prediction functionality and deploying it locally as well as in the cloud. Additionally created the Datadrift detection functionality deployed in the cloud. Implemented Profiling into the training loop.
