@@ -66,7 +66,7 @@ end of the project.</p>
 <li>[x] Setup monitoring for the system telemetry of your deployed model</li>
 <li>[x] Setup monitoring for the performance of your deployed model</li>
 <li>[x] If applicable, play around with distributed data loading</li>
-<li>[x] If applicable, play around with distributed model training</li>
+<li>[ ] If applicable, play around with distributed model training</li>
 <li>[ ] Play around with quantization, compilation and pruning for you trained models to increase inference speed</li>
 </ul>
 <h3>Additional</h3>
@@ -81,7 +81,7 @@ end of the project.</p>
 <p><strong>Enter the group number you signed up on <learn.inside.dtu.dk></strong></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- 2 ---</p>
+<p>--- Error 404 group number not found ---</p>
 <h3>Question 2</h3>
 <blockquote>
 <p><strong>Enter the study number for each member in the group</strong></p>
@@ -89,7 +89,7 @@ end of the project.</p>
 <p><em>sXXXXXX, sXXXXXX, sXXXXXX</em></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- 12693911 Daniel C., 12694510 Lennart M. ---</p>
+<p>--- 12693911 Daniel Ch., 12694510 Lennart M. ---</p>
 <h3>Question 3</h3>
 <blockquote>
 <p><strong>What framework did you choose to work with and did it help you complete the project?</strong></p>
@@ -134,7 +134,7 @@ Answer:</p>
 <p>Answer length: 50-100 words.</p>
 <p>Answer:</p>
 </blockquote>
-<p>--- We added pre-commit hooks with black, isort and flake 8. Additionally, automatic tests run via github actions to check codeformatting using black and isort. Good Code Formatting is especially important in larger projects because a lot of people with different coding styles work on the same code base. To reduce the friction as much as possible and provide good code understandability especially for developers that didn't write the code themselves having a uniform way of code formatting is beneficial---</p>
+<p>--- We added pre-commit hooks with black, isort and flake8. Additionally, automatic tests run via github actions to check codeformatting flake8. Good Code Formatting is especially important in larger projects because a lot of people with different coding styles work on the same code base. To reduce the friction as much as possible and provide good code understandability especially for developers that didn't write the code themselves having a uniform way of code formatting is beneficial---</p>
 <h2>Version control</h2>
 <blockquote>
 <p>In the following section we are interested in how version control was used in your project during development to
@@ -149,14 +149,14 @@ corporate and increase the quality of your code.</p>
 <em>application but also ... .</em></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- we implemented a total of 4 tests in the project, where 3 check that the raw input data has the correct shape to work with the preprocessing pipeline to be later fed into the Neural Network for training. The fourth test is supposed to check if the model state dict was saved correctly can be loaded and leads to the correct output shape to assure that its possible to make predictions with the trained model. ---</p>
+<p>--- We implemented a total of 4 tests in the project, where 3 check that the raw input data has the correct shape to work with the preprocessing pipeline to be later fed into the Neural Network for training. The fourth test is supposed to check if the model state dict was saved correctly can be loaded and leads to the correct output shape to assure that its possible to make predictions with the trained model. We are aware that it would be beneficial to add more tests but ran out of time to do so. ---</p>
 <h3>Question 8</h3>
 <blockquote>
 <p><strong>What is the total code coverage (in percentage) of your code? If you code had an code coverage of 100% (or close</strong>
 <strong>to), would you still trust it to be error free? Explain you reasoning.</strong></p>
 <p>Answer length: 100-200 words.</p>
 <p>Example:
-<em>The total code coverage of code is X%, which includes all our source code. We are far from 100% coverage of our **
+<em>The total code coverage of code is X%, which includes all our source code. We are far from 100% coverage of our </em><em>
 </em>code and even if we were then...*</p>
 <p>Answer:</p>
 </blockquote>
@@ -171,7 +171,7 @@ corporate and increase the quality of your code.</p>
 <em>addition to the main branch. To merge code we ...</em></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- To beginn we converted each object of the project checklist provided by the dtu course into an issue. From this we created a GitHub Project Kanban Board to have an overview which tasks need to be done next. Within the Project our process was now to create a new branch when working on an issue. The branch was linked to the issue that was being worked on, which in term moved the issue form ToDo to in Progress. When the Feature was ready to be merged with the main branch, we created a pull request, that started the testing workflows on github. When all tests passed we then completed the pull request to merge into the main branch. Afterwards the issue could be closed and moved to done on the Kanban board automatically. <img alt="Kanban Board" src="figures/Kanban_board.png" /> ---</p>
+<p>--- To beginn we converted each object of the project checklist provided by the dtu course into an issue. From this we created a GitHub Project Kanban Board to have an overview which tasks need to be done next. Within the Project our process was now to create a new branch when working on an issue. The branch was linked to the issue that was being worked on, which in term moved the issue form ToDo to in Progress. When the Feature was ready to be merged with the main branch, we created a pull request, that started the testing workflows on github. When all tests passed we then completed the pull request to merge into the main branch. Afterwards the issue could be closed and moved to done on the Kanban board automatically. <a href="figures/Kanban_board.png">Kanban Board</a> ---</p>
 <h3>Question 10</h3>
 <blockquote>
 <p><strong>Did you use DVC for managing data in your project? If yes, then how did it improve your project to have version</strong>
@@ -182,7 +182,7 @@ corporate and increase the quality of your code.</p>
 <em>pipeline</em></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- We did not use DVC in our Project because we had some Problems making the google Drive integration work with our Project data. Since our Dataset was rather small we opted for just using github for the version control which is not idead, but brings similar functionality. Data Version Control is especially useful in research where reproducability is often hard. This can be greatly improved by using data version control. Particularly when working with large amounts of data doing version control on git is infeasable. DVC stores metadata about the data and models in Git, while the actual data files remain separate to avoid bloating the Git repository. ---</p>
+<p>--- We did not use DVC in our project because we had some Problems making the google Drive integration work with our Project data. Since our dataset was rather small (about 30 MB) we opted for just using github for the version control which is not idead, but brings similar functionality. Data Version Control is especially useful in research where reproducability is often hard. This can be greatly improved by using data version control. Particularly when working with large amounts of data doing version control on git is infeasable. DVC stores metadata about the data and models in Git, while the actual data files remain separate to avoid bloating the Git repository. ---</p>
 <h3>Question 11</h3>
 <blockquote>
 <p><strong>Discuss you continues integration setup. What kind of CI are you running (unittesting, linting, etc.)? Do you test</strong>
@@ -194,7 +194,7 @@ corporate and increase the quality of your code.</p>
 <em>... . In particular for our ..., we used ... .An example of a triggered workflow can be seen here: <weblink></em></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- our continiuous integration setup consists of two different github action workflows. Both run everytime a pull request to main is done. The first workflow (linked below) that executes the local unit tests (explained above). The second Workflow checks the code which is to be merged to main for code formatting errors to be compliant with general code formatting rules and provide readability for other developers. The <a href="https://github.com/danielch1/mlops_project/blob/be07608cdba55652616fda39c7105dc524e23498/.github/workflows/tests.yml">link to github workflow</a> ---</p>
+<p>--- Our continiuous integration setup consists of two different github action workflows. Both run everytime a pull request to main is done. The first workflow (linked below) that executes the local unit tests (explained above). The second workflow checks the code which is to be merged to main for code formatting errors to be compliant with general code formatting rules and provide readability for other developers. The tests run on ubuntu and windows. The workflows also included tests on MacOS which we decided to leave out because the syntax is quite similar. The <a href="https://github.com/danielch1/mlops_project/blob/be07608cdba55652616fda39c7105dc524e23498/.github/workflows/tests.yml">link to github workflow</a> ---</p>
 <h2>Running code and tracking experiments</h2>
 <blockquote>
 <p>In the following section we are interested in learning more about the experimental setup for running your code and
@@ -220,7 +220,7 @@ especially the reproducibility of your experiments.</p>
 <em>one would have to do ...</em></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- Since the hyperparameters get saved to the wandb project including the resulting training and validation accuracy, to reproduce an experiment one has to go to wandb and look at the saved runs and the included information. It is also possible to look at the output files created by Hydra and use the configuration for the experiment that needs to be reproduced.---</p>
+<p>--- Since the hyperparameters get saved to the wandb project including the resulting training and validation accuracy, to reproduce an experiment one has to go to wandb and look at the saved runs and the included information. It is also possible to look at the output files created by Hydra and use the configuration for the experiment that needs to be reproduced. ---</p>
 <h3>Question 14</h3>
 <blockquote>
 <p><strong>Upload 1 to 3 screenshots that show the experiments that you have done in W&amp;B (or another experiment tracking</strong>
@@ -255,7 +255,7 @@ especially the reproducibility of your experiments.</p>
 <em>run of our main code at some point that showed ...</em></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- Debuggin was carried out with the VSCode debugging tool. This allows following where the errors happen and which part of the code actually runs. It's also useful to find problems that dont raise errors or break the processes. By using breakpoints int the right places it is easy to check where the problems occur and how to solve them in an efficient kind of way. We did a single profiling of the training loop to get insights into where the bottlenecks of our code lie. Since the profiling shows that most of the ressources are allocated to the training functionality of the neural network instead of the data loading there is not much potential to increase the efficiency of the training loop. ---</p>
+<p>--- Debugging was carried out with the VSCode debugging tool. This allows following where the errors happen and which part of the code actually runs. It's also useful to find problems that dont raise errors or break the processes. By using breakpoints in the right places it is easy to check where the problems occur and how to solve them in an efficient kind of way. We did a single profiling of the training loop to get insights into where the bottlenecks of our code lie. Since the profiling shows that most of the ressources are allocated to the training functionality of the neural network instead of the data loading there is not much potential to increase the efficiency of the training loop. ---</p>
 <h2>Working in the cloud</h2>
 <blockquote>
 <p>In the following section we would like to know more about your experience when developing in the cloud.</p>
@@ -268,7 +268,7 @@ especially the reproducibility of your experiments.</p>
 <em>We used the following two services: Engine and Bucket. Engine is used for... and Bucket is used for...</em></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- We use google cloud storage for storing the raw data in the cloud. It also contains the state dict of the bes trained model that we obtained from the training procedure. It gets saved there automatically. To Track Data Drifting we also stored the images that are called via the inference deployment. We use Cloud Run to deploy the the inference API. Additionally we use Google Cloud Function to deploy a function that compares the images that are stored from the inference API with the original training data from the cloud storage buckets. This Cloud functions saves the results into data_drifting logs directory in the storage bucket. The function is called once every day at 00:01 via Google Cloud Scheduler. We use Cloud Build to automatically build docker images every time a pull request is merged to main in the github repository. The built images are then stored in the Cloud container registry ---</p>
+<p>--- We use Google Cloud Storage for storing the raw data in the cloud. It also contains the state dict of the best trained model that we obtained from the training procedure. It gets saved there automatically. To track Data Drifting we also stored the images that are pushed via the inference API. We use Cloud Run to deploy the the inference API. Additionally we use Google Cloud Function to deploy a function that compares the images that are stored from the inference API with the original training data from the cloud storage buckets. This Cloud functions saves the results into data_drifting logs directory in the storage bucket. The function is called once every day at 00:01 via Google Cloud Scheduler. We use Cloud Build to automatically build docker images every time a pull request is merged to main in the github repository. The built images are then stored in the Cloud Container Registry. Cloud Engine is used to run a Virtual Machine with our model training. We also used Cloud Monitoring and Alerts to monitor our project. ---</p>
 <h3>Question 18</h3>
 <blockquote>
 <p><strong>The backbone of GCP is the Compute engine. Explained how you made use of this service and what type of VMs</strong>
@@ -279,7 +279,7 @@ especially the reproducibility of your experiments.</p>
 <em>using a custom container: ...</em></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- question 18 fill here Daniel ---</p>
+<p>--- Certainly, we relied on Google Cloud Platform's Compute Engine to host Virtual Machines (VMs) for our project. These VMs were of standard E2 configuration with 8 usable threads, without GPUs (due to free account limitations), suitable for running our model training jobs. If it wasn't for a free account limitations, we would have utilized scaling capabilities of a cloud by using moge cores or a GPU to speed up our model training.  ---</p>
 <h3>Question 19</h3>
 <blockquote>
 <p><strong>Insert 1-2 images of your GCP bucket, such that we can see what data you have stored in it.</strong>
@@ -312,7 +312,7 @@ especially the reproducibility of your experiments.</p>
 <em><code>curl -X POST -F "file=@file.json"&lt;weburl&gt;</code></em></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- For deployment we wrapped our model into application using the FastAPI Framework and Uvicorn. This worked out locally as well as in the cloud. The Deployment provides inference to the user. He supplies the model with an image, which than will respond with a prediction to what lego minifigure it could be. Since the model has to be supplied with an image it is best to use the python built in request package to load the image and provide it to the api. Both Applications save the image that is used for prediction into a cloud storage bucket, to check for data drifting. ---</p>
+<p>--- For deployment we wrapped our model into application using the FastAPI Framework and Uvicorn. This worked out locally as well as in the cloud. The Deployment provides inference to the user. He supplies the model with an image, which than will respond with a prediction to what lego minifigure it could be. Since the model has to be supplied with an image it is best to use the python built in request package to load the image and provide it to the api. Both Applications save the image that is used for prediction into a cloud storage bucket, to check for data drifting. We uploaded a script which in the repo is located under src/models and is called client_predict.py. It randomly selects one image out of the tests set and sends it to the cloud api for a prediction. And returns the result it got from the request in form of the prediction and the image that it sent. ---</p>
 <h3>Question 23</h3>
 <blockquote>
 <p><strong>Did you manage to implement monitoring of your deployed model? If yes, explain how it works. If not, explain how</strong>
@@ -327,13 +327,13 @@ especially the reproducibility of your experiments.</p>
 <p>We've implemented a comprehensive three-fold monitoring system to ensure the reliability and effectiveness of our model:</p>
 <ol>
 <li>
-<p>System Monitoring: Our predictions app, the deployed model, undergoes continuous system monitoring. When this service experiences heavy usage, characterized by an average response waiting time exceeding 1 second or receiving more than 60 requests per minute, our project admin is promptly notified via email. This alert mechanism empowers us to proactively allocate additional computing resources to the service as needed.</p>
+<p>System Monitoring: Our predictions app, the deployed model, undergoes continuous system monitoring. When this service experiences heavy usage, characterized by an average response waiting time exceeding 1 second or receiving more than 60 requests per minute, our project admin is promptly notified via email. This alert mechanism empowers us to proactively allocate additional computing resources to the service as needed. <a href="figures/cloud_alert.png">Triggered alert</a>.</p>
 </li>
 <li>
 <p>Data Drift Monitoring: Every image sent to our inference app is meticulously logged and stored. We perform a daily data drift check, which evaluates specific image features such as brightness and contrast. The results of this check are compiled into a comprehensive report and securely saved in our project's data bucket. Should a significant data drift be detected, this insightful data empowers us to consider triggering a model retraining process, maintaining the model's accuracy and relevancy.</p>
 </li>
 <li>
-<p>Model Performance Monitoring: As new batches of labeled data arrive, we've devised a streamlined process. We've divided our validation subset into three manageable batches. A Cloud Function is triggered each time a batch is uploaded to our project bucket. This function conducts inference on the data and rigorously assesses prediction accuracy. The outcomes of this assessment are meticulously documented in the form of a detailed report, stored within the project's storage bucket. If a significant drop in model performance is identified, this proactive approach enables us to promptly initiate the model retraining process, guaranteeing that our model remains accurate and effective. Performance check figure can be seen here: <a href="figures/accuracy_plot_2023-10-11_00-19-42.png">Accuracy Plot</a>.</p>
+<p>Model Performance Monitoring: As new batches of labeled data arrive, we've devised a streamlined process. We've divided our validation subset into three manageable batches. A Cloud Function is triggered each time a batch is uploaded to our project bucket. This function conducts inference on the data and rigorously assesses prediction accuracy. The outcomes of this assessment are meticulously documented in the form of a detailed report, stored within the project's storage bucket. If a significant drop in model performance is identified, this proactive approach enables us to promptly initiate the model retraining process, guaranteeing that our model remains accurate and effective. Performance check figure can be seen here: <a href="figures/accuracy_plot_2023-10-11_00-19-42.png">Batches accuracy plot</a>.</p>
 </li>
 </ol>
 <p>Monitoring functions setup can be seen here: <a href="figures/cloud_functions.png">Cloud Functions</a></p>
@@ -347,7 +347,7 @@ especially the reproducibility of your experiments.</p>
 <em>costing the most was ... due to ...</em></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- We created a new google account to use the cloud features, which we then shared to make cooperating easier. So we only have information on the joint credits used on google cloud. We used 14€ Credits in total. The Allocation can be seen in the figure <a href="figures/overview.png">this figure</a> ---</p>
+<p>--- We created a new google account to use the cloud features, which we then shared to make cooperating easier. So we only have information on the joint credits used on google cloud. We used 14€ Credits in total. The Allocation can be seen in the figure <a href="figures/billing.png">this figure</a> ---</p>
 <h2>Overall discussion of project</h2>
 <blockquote>
 <p>In the following section we would like you to think about the general structure of your project.</p>
@@ -363,7 +363,7 @@ especially the reproducibility of your experiments.</p>
 <em>Whenever we commit code and puch to github, it auto triggers ... and ... . From there the diagram shows ...</em></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- Project scheme: <a href="figures/overview_our.png">this figure</a>. 
+<p>--- <img alt="Project scheme" src="figures/overview_our.png" />. 
 The diagram begins with our local development environment where we manage our repository. Within this setup, we've harnessed the power of the Timm framework, built on the robust Torch package, to create our model. Our repository, organized using GitHub, ensures smooth collaboration. We've added automated checks for formatting and running tests every time we merge a feature branch into the main branch. Additionally, we've implemented a pre-commit hook to enforce code formatting and PEP 8 compliance.</p>
 <p>Whenever a new version of our repository (main branch) becomes available, it triggers an automatic build of Docker Images on the Google Cloud Platform. These Docker Images contain the training script and are executed within a Virtual Machine on Google Compute Engine. The resulting model is stored in a Google Storage Bucket, while training logs and configurations are safely kept on the WandB platform. Notably, we have the flexibility to run model training, including WandB logging, on a local computer, and it can also save models to the same Cloud Bucket.</p>
 <p>Another Dockerfile runs on Cloud Run, housing a prediction application that leverages the latest model version. Users can conveniently access the prediction app via our Python client script. Upon uploading an image, the app swiftly returns model predictions.</p>
@@ -378,7 +378,7 @@ The diagram begins with our local development environment where we manage our re
 <em>The biggest challenges in the project was using ... tool to do ... . The reason for this was ...</em></p>
 <p>Answer:</p>
 </blockquote>
-<p>--- The biggest challenge of the wasn't just one tool but making all tools work together. Especially when adding new features and new tools one would have to check if everything else still works. This lead us to improving the structure of the source code multiple times because another tool would require different requirements. That being said, working with the cloud also provided a demanding challenge because testing and deploying takes much longer than these same actions take on a local machine. ---</p>
+<p>--- The biggest challenge of the project wasn't just one tool but making all tools work together. Especially when adding new features and new tools one would have to check if everything else still works. This lead us to improving the structure of the source code multiple times because another tool would require different requirements. That being said, working with the cloud also provided a demanding challenge because testing and deploying takes much longer than these same actions take on a local machine. ---</p>
 <h3>Question 27</h3>
 <blockquote>
 <p><strong>State the individual contributions of each team member. This is required information from DTU, because we need to</strong>
@@ -392,8 +392,8 @@ The diagram begins with our local development environment where we manage our re
 <p>Answer:</p>
 </blockquote>
 <hr />
-<p>Student 12693911 Daniel C.
+<p>Student 12693911 Daniel Ch.
 Set up the github repository. Set up project structure using CookieCutter. Created the Issues and the Kanban Board. Created the Hydra integration for hyperparameters being managed by a config file. Integrated pre-commit hooks. Tried to set up DVC (twice). Set up the Google Cloud Project and google account for being able to work cooperatively on the project. Set up Google Storage. Set up automated docker image build based on a GitHub repository push. Moved model training to a cloud VM that saves the trained model to a project bucked. Set up System Monitoring of the deplyed model. Set up Model Performance Monitoring by using symulated batches of data and Cloud Functions. Set up automatical authentication using .env files and secrets to get WandB working on all platforms. Run an experimient to optimize Data Loading using Distributed Data Loading. Set up Github actions for code formatting check and running tests.</p>
 <p>Student 12694510 Lennart M.
-Created the source code for data preprocessing and dataset creation from the raw images. Creating Config and Hydra integration for image transformation via .yaml files. Setting up the CI on github actions and writing unit tests. Writing the Inference/prediction functionality and deploying it locally as well as in the cloud. Additionally created the Datadrift detection functionality deployed in the cloud. Implemented Profiling into the training loop.</p>
+He was responsible for generating the source code that handled data preprocessing and the formation of datasets using raw images. He also integrated Config and Hydra to facilitate image transformations through .yaml files. In addition, he configured continuous integration on GitHub Actions and crafted unit tests. He also wrote the functionality for inference and prediction, deploying it both locally and in the cloud. Furthermore, he developed Datadrift detection features for cloud deployment and incorporated profiling into the training loop.</p>
 <hr />
