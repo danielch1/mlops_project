@@ -352,7 +352,7 @@ end of the project.
 >
 > Answer:
 
---- We use google cloud storage for storing the raw data in the cloud. It also contains the state dict of the bes trained model that we obtained from the training procedure. It gets saved there automatically. To Track Data Drifting we also stored the images that are called via the inference deployment. We use Cloud Run to deploy the the inference API. Additionally we use Google Cloud Function to deploy a function that compares the images that are stored from the inference API with the original training data from the cloud storage buckets. This Cloud functions saves the results into data_drifting logs directory in the storage bucket. The function is called once every day at 00:01 via Google Cloud Scheduler. We use Cloud Build to automatically build docker images every time a pull request is merged to main in the github repository. The built images are then stored in the Cloud container registry ---
+--- We use Google Cloud Storage for storing the raw data in the cloud. It also contains the state dict of the best trained model that we obtained from the training procedure. It gets saved there automatically. To track Data Drifting we also stored the images that are pushed via the inference API. We use Cloud Run to deploy the the inference API. Additionally we use Google Cloud Function to deploy a function that compares the images that are stored from the inference API with the original training data from the cloud storage buckets. This Cloud functions saves the results into data_drifting logs directory in the storage bucket. The function is called once every day at 00:01 via Google Cloud Scheduler. We use Cloud Build to automatically build docker images every time a pull request is merged to main in the github repository. The built images are then stored in the Cloud Container Registry. Cloud Engine is used to run a Virtual Machine with our model training. We also used Cloud Monitoring and Alerts to monitor our project. ---
 
 ### Question 18
 
@@ -367,7 +367,7 @@ end of the project.
 >
 > Answer:
 
---- question 18 fill here Daniel ---
+--- Certainly, we relied on Google Cloud Platform's Compute Engine to host Virtual Machines (VMs) for our project. These VMs were of standard E2 configuration with 8 usable threads, without GPUs (due to free account limitations), suitable for running our model training jobs. If it wasn't for a free account limitations, we would have utilized scaling capabilities of a cloud by using moge cores or a GPU to speed up our model training.  ---
 
 ### Question 19
 
@@ -429,11 +429,11 @@ end of the project.
 
 We've implemented a comprehensive three-fold monitoring system to ensure the reliability and effectiveness of our model:
 
-1. System Monitoring: Our predictions app, the deployed model, undergoes continuous system monitoring. When this service experiences heavy usage, characterized by an average response waiting time exceeding 1 second or receiving more than 60 requests per minute, our project admin is promptly notified via email. This alert mechanism empowers us to proactively allocate additional computing resources to the service as needed.
+1. System Monitoring: Our predictions app, the deployed model, undergoes continuous system monitoring. When this service experiences heavy usage, characterized by an average response waiting time exceeding 1 second or receiving more than 60 requests per minute, our project admin is promptly notified via email. This alert mechanism empowers us to proactively allocate additional computing resources to the service as needed. [Triggered alert](figures/cloud_alert.png).
 
 2. Data Drift Monitoring: Every image sent to our inference app is meticulously logged and stored. We perform a daily data drift check, which evaluates specific image features such as brightness and contrast. The results of this check are compiled into a comprehensive report and securely saved in our project's data bucket. Should a significant data drift be detected, this insightful data empowers us to consider triggering a model retraining process, maintaining the model's accuracy and relevancy.
 
-3. Model Performance Monitoring: As new batches of labeled data arrive, we've devised a streamlined process. We've divided our validation subset into three manageable batches. A Cloud Function is triggered each time a batch is uploaded to our project bucket. This function conducts inference on the data and rigorously assesses prediction accuracy. The outcomes of this assessment are meticulously documented in the form of a detailed report, stored within the project's storage bucket. If a significant drop in model performance is identified, this proactive approach enables us to promptly initiate the model retraining process, guaranteeing that our model remains accurate and effective. Performance check figure can be seen here: [Accuracy Plot](figures/accuracy_plot_2023-10-11_00-19-42.png).
+3. Model Performance Monitoring: As new batches of labeled data arrive, we've devised a streamlined process. We've divided our validation subset into three manageable batches. A Cloud Function is triggered each time a batch is uploaded to our project bucket. This function conducts inference on the data and rigorously assesses prediction accuracy. The outcomes of this assessment are meticulously documented in the form of a detailed report, stored within the project's storage bucket. If a significant drop in model performance is identified, this proactive approach enables us to promptly initiate the model retraining process, guaranteeing that our model remains accurate and effective. Performance check figure can be seen here: [Batches accuracy plot](figures/accuracy_plot_2023-10-11_00-19-42.png).
 
 Monitoring functions setup can be seen here: [Cloud Functions](figures/cloud_functions.png)
  ---
